@@ -1,7 +1,3 @@
-Here’s a sample README for your AWS-Project-Hub repository:
-
----
-
 # AWS-Project-Hub
 
 ![AWS Logo](https://aws.amazon.com/favicon.ico) <!-- Optional: Add an AWS logo or relevant image -->
