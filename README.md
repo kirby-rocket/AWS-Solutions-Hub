@@ -6,15 +6,21 @@
 
 Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collection of AWS projects, ranging from initial setup to advanced solutions. It aims to help users understand and implement various AWS services using **Terraform** for Infrastructure as Code (IaC). Whether you're a beginner looking to set up your first AWS account or an experienced developer seeking to expand your knowledge, you'll find valuable resources here.
 
-## Maintainer
+## Maintainers
 
-**Kumail Rizvi**
+**Kumail Rizvi** 
+
+[![LinkedIn](path/to/linkedin-logo.png)](https://www.linkedin.com/in/kumail-rizvi/)
+
+**Amir Malaeb**
+
+[![LinkedIn](path/to/linkedin-logo.png)](https://www.linkedin.com/in/amir-malaeb/)
 
 ## Table of Contents
 
 - [AWS-Projects-Hub](#aws-projects-hub)
   - [Description](#description)
-  - [Maintainer](#maintainer)
+  - [Maintainers](#maintainers)
   - [Table of Contents](#table-of-contents)
   - [Part 1: AWS Setup](#part-1-aws-setup)
     - [01-aws-account-setup](#01-aws-account-setup)
