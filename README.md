@@ -10,11 +10,11 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 
 **Kumail Rizvi** 
 
-[![LinkedIn](path/to/linkedin-logo.png)](https://www.linkedin.com/in/kumail-rizvi/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kumail-rizvi/)
 
 **Amir Malaeb**
 
-[![LinkedIn](path/to/linkedin-logo.png)](https://www.linkedin.com/in/amir-malaeb/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/amir-malaeb/)
 
 ## Table of Contents
 
