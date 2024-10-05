@@ -56,8 +56,6 @@ Create a secrets file called secrets.tfvars and populate it with the follow secr
 
 ## Initializing the Terraform directory
 
-## Run the command:
-
 ```
 terraform init
 ```
