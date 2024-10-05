@@ -1,6 +1,5 @@
-# AWS-Projects-Hub
+# ![AWS Logo](https://aws.amazon.com/favicon.ico) <!-- Optional: Add an AWS logo or relevant image --> AWS-Projects-Hub
 
-![AWS Logo](https://aws.amazon.com/favicon.ico) <!-- Optional: Add an AWS logo or relevant image -->
 
 ## Description
 
@@ -18,7 +17,7 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 
 ## Table of Contents
 
-- [AWS-Projects-Hub](#aws-projects-hub)
+- [  AWS-Projects-Hub](#--aws-projects-hub)
   - [Description](#description)
   - [Maintainers](#maintainers)
   - [Table of Contents](#table-of-contents)
