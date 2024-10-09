@@ -32,6 +32,9 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
     - [01-ec2-web-server](#01-ec2-web-server)
     - [02-s3-static-website](#02-s3-static-website)
     - [03-rds-setup](#03-rds-setup)
+  - [Part 4: Medium Projects](#part-4-medium-projects)
+    - [01-3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
+    - [02-SAM-magic-8-ball](#02-SAM-magic-8-ball)
   - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
@@ -85,7 +88,7 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 
 ## Part 4: Medium Projects
 
-### 01-3-Tier-VPC (Console and CLI)
+### 01-3-Tier-VPC
 - **File:** [project-description.md](04-medium-projects/01-3-Tier-VPC-Setup/project-description.md)
 - **Description:** Guide to setting up a 3-tier VPC architecture with public and private subnets, NAT gateways, and routing tables for secure and scalable applications.
 
