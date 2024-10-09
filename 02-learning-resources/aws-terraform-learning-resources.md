@@ -15,12 +15,10 @@ This guide provides a comprehensive list of learning resources for AWS and Terra
 - [Coursera](https://www.coursera.org/) - Offers various AWS courses and specializations.
 - [edX](https://www.edx.org/) - Provides AWS courses and professional certificate programs.
 - [A Cloud Guru](https://acloudguru.com/) - Specialized in cloud learning, including extensive AWS content.
-- [Linux Academy](https://linuxacademy.com/) - Offers hands-on labs and courses for AWS.
 - [Udemy](https://www.udemy.com/) - Hosts a wide range of AWS courses from various instructors.
 
 ### 3. Hands-on Practice
 - [AWS Workshops](https://workshops.aws/) - Free, self-paced labs covering various AWS services and scenarios.
-- [Qwiklabs for AWS](https://amazon.qwiklabs.com/) - Hands-on labs with temporary AWS accounts.
 
 ### 4. Community Resources
 - [AWS re:Invent Videos](https://www.youtube.com/results?search_query=aws+reinvent) - Sessions from AWS's annual conference.
