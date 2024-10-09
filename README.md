@@ -89,6 +89,10 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 - **File:** [project-description.md](04-medium-projects/01-3-Tier-VPC-Setup/project-description.md)
 - **Description:** Guide to setting up a 3-tier VPC architecture with public and private subnets, NAT gateways, and routing tables for secure and scalable applications.
 
+### 02-SAM-magic-8-ball
+- **File:** [project-description.md](04-medium-projects/02-sam-magic-8-ball/project-description.md)
+- **Description:** This project is a serverless implementation of the Magic 8 Ball, featuring an interactive web interface. Powered by AWS Lambda for backend logic and hosted on S3 for the frontend, it delivers random responses to user questions for an engaging experience.
+
 ---
 
 ## Getting Started
