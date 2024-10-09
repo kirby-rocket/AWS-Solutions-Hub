@@ -83,6 +83,14 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 
 ---
 
+## Part 4: Medium Projects
+
+### 01-3-Tier-VPC (Console and CLI)
+- **File:** [project-description.md](04-medium-projects/01-3-Tier-VPC-Setup/project-description.md)
+- **Description:** Guide to setting up a 3-tier VPC architecture with public and private subnets, NAT gateways, and routing tables for secure and scalable applications.
+
+---
+
 ## Getting Started
 
 1. **Fork or Clone the Repository:**
