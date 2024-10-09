@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystical Magic 8 Ball Experience</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #1a1a2e;
+            color: white;
+            overflow: hidden;
+        }
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('');
+            background-size: cover;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .ball-container {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            perspective: 1000px;
+        }
+        .ball {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, #4a4a4a, #000000);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 120px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+        }
+        .ball:hover {
+            transform: scale(1.05);
+        }
+        .ball.shake {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        #response {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        #response.visible {
+            opacity: 1;
+        }
+        .question-input {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 5px;
+            color: white;
+        }
+        .question-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .fortune-teller {
+            display: none;
+            position: fixed;
+            top: 50%;
+            right: 50px;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 300px;
+            transition: all 0.5s ease-in-out;
+        }
+        .fortune-teller.visible {
+            display: block;
+        }
+        @keyframes float {
+            0% { transform: translateY(-50%) translateX(0px); }
+            50% { transform: translateY(-50%) translateX(-20px); }
+            100% { transform: translateY(-50%) translateX(0px); }
+        }
+        .fortune-teller.floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        .content-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .main-content {
+            flex: 1;
+            max-width: 600px;
+        }
+        @keyframes crystal-glow {
+            0% { filter: drop-shadow(0 0 5px #4a9fff); }
+            50% { filter: drop-shadow(0 0 20px #4a9fff); }
+            100% { filter: drop-shadow(0 0 5px #4a9fff); }
+        }
+        .crystal-ball {
+            animation: crystal-glow 3s infinite;
+        }
+        @keyframes eye-blink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+        .eye {
+            animation: eye-blink 4s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <button class="mode-toggle" id="modeToggle">Fortune Teller Mode</button>
+        <div class="content-wrapper">
+            <div class="main-content">
+                <h1>Mystical Magic 8 Ball Experience</h1>
+                <input type="text" class="question-input" placeholder="Ask your question..." id="questionInput">
+                <div class="ball-container">
+                    <div class="ball" id="magicBall">8</div>
+                </div>
+                <div id="response"></div>
+            </div>
+        </div>
+    </div>
+    <div class="fortune-teller" id="fortuneTeller">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <!-- Fortune Teller Body -->
+            <path d="M100 180 L150 120 Q100 140 50 120 Z" fill="#4a0e4e"/>
+            <!-- Fortune Teller Head -->
+            <circle cx="100" cy="100" r="50" fill="#8b4b8b"/>
+            <!-- Fortune Teller Eyes -->
+            <circle class="eye" cx="80" cy="90" r="10" fill="white"/>
+            <circle class="eye" cx="120" cy="90" r="10" fill="white"/>
+            <circle cx="80" cy="90" r="5" fill="black"/>
+            <circle cx="120" cy="90" r="5" fill="black"/>
+            <!-- Fortune Teller Mouth -->
+            <path d="M85 120 Q100 140 115 120" fill="none" stroke="white" stroke-width="3"/>
+            <!-- Crystal Ball -->
+            <circle class="crystal-ball" cx="100" cy="160" r="30" fill="#4a9fff" fill-opacity="0.5"/>
+            <!-- Magic Swirls -->
+            <path d="M70 50 Q100 20 130 50" fill="none" stroke="#ffd700" stroke-width="2">
+                <animate attributeName="d" dur="5s" repeatCount="indefinite"
+                    values="M70 50 Q100 20 130 50;
+                            M70 50 Q100 80 130 50;
+                            M70 50 Q100 20 130 50"/>
+            </path>
+            <path d="M60 80 Q100 60 140 80" fill="none" stroke="#ffd700" stroke-width="2">
+                <animate attributeName="d" dur="7s" repeatCount="indefinite"
+                    values="M60 80 Q100 60 140 80;
+                            M60 80 Q100 100 140 80;
+                            M60 80 Q100 60 140 80"/>
+            </path>
+        </svg>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        const ball = document.getElementById('magicBall');
+        const response = document.getElementById('response');
+        const questionInput = document.getElementById('questionInput');
+        const modeToggle = document.getElementById('modeToggle');
+        const fortuneTeller = document.getElementById('fortuneTeller');
+        let fortuneTellerMode = false;
+
+        // Sound effects
+        const shakeSound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_db894447fe.mp3?filename=rattle-small-39686.mp3');
+        const revealSound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/19/audio_ac6b8c6f25.mp3?filename=magic-spell-6005.mp3');
+
+        ball.addEventListener('click', askQuestion);
+        modeToggle.addEventListener('click', toggleMode);
+
+        function askQuestion() {
+            if (questionInput.value.trim() === '') {
+                alert('Please ask a question first!');
+                return;
+            }
+
+            ball.classList.add('shake');
+            shakeSound.play();
+            response.classList.remove('visible');
+
+            setTimeout(() => {
+                fetch('<add your API URL here>') 
+                    .then(response => response.json())
+                    .then(data => {
+                        ball.classList.remove('shake');
+                        response.textContent = data.message;
+                        response.classList.add('visible');
+                        revealSound.play();
+                        if (fortuneTellerMode) {
+                            fortuneTeller.classList.add('floating');
+                            setTimeout(() => fortuneTeller.classList.remove('floating'), 3000);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        ball.classList.remove('shake');
+                        response.textContent = 'The spirits are silent. Try again.';
+                        response.classList.add('visible');
+                    });
+            }, 1000);
+        }
+
+        function toggleMode() {
+            fortuneTellerMode = !fortuneTellerMode;
+            fortuneTeller.classList.toggle('visible');
+            modeToggle.textContent = fortuneTellerMode ? 'Magic 8 Ball Mode' : 'Fortune Teller Mode';
+        }
+
+        questionInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                askQuestion();
+            }
+        });
+
+        // Initialize particle background
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ffffff" },
+                shape: { type: "circle", stroke: { width: 0, color: "#000000" }, polygon: { nb_sides: 5 } },
+                opacity: { value: 0.5, random: false, anim: { enable: false, speed: 1, opacity_min: 0.1, sync: false } },
+                size: { value: 3, random: true, anim: { enable: false, speed: 40, size_min: 0.1, sync: false } },
+                line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 6, direction: "none", random: false, straight: false, out_mode: "out", bounce: false, attract: { enable: false, rotateX: 600, rotateY: 1200 } }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+                modes: { grab: { distance: 400, line_linked: { opacity: 1 } }, bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 }, repulse: { distance: 200, duration: 0.4 }, push: { particles_nb: 4 }, remove: { particles_nb: 2 } }
+            },
+            retina_detect: true
+        });
+    </script>
+</body>
+</html>

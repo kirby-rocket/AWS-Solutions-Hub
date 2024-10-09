@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Serverless Magic 8 Ball Application
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+
+Resources:
+  Magic8BallFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      CodeUri: .
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Events:
+        AskQuestionAPI:
+          Type: HttpApi
+          Properties:
+            Path: /ask
+            Method: GET
+            ApiId: !Ref Magic8BallApi
+
+  Magic8BallApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: Prod
+      CorsConfiguration:
+        AllowMethods:
+          - GET
+        AllowHeaders:
+          - '*'
+        AllowOrigins:
+          - '*'  # For development. Consider restricting this for production.
+        MaxAge: 600  # Optional: Set the maximum age of the CORS preflight request in seconds
+
+Outputs:
+  Magic8BallApiUrl:
+    Description: "HTTP API endpoint URL for Magic 8 Ball"
+    Value: !Sub "https://${Magic8BallApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/ask"
+  Magic8BallFunction:
+    Description: "Magic 8 Ball Lambda Function ARN"
+    Value: !GetAtt Magic8BallFunction.Arn

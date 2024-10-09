@@ -28,10 +28,14 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
     - [01-aws-concepts](#01-aws-concepts)
     - [02-aws-services](#02-aws-services)
     - [03-terraform-basics](#03-terraform-basics)
+    - [04-aws-terraform-learning-resources](#04-aws-terraform-learning-resources)
   - [Part 3: Basic Projects](#part-3-basic-projects)
     - [01-ec2-web-server](#01-ec2-web-server)
     - [02-s3-static-website](#02-s3-static-website)
     - [03-rds-setup](#03-rds-setup)
+  - [Part 4: Medium Projects](#part-4-medium-projects)
+    - [01-3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
+    - [02-SAM-magic-8-ball](#02-SAM-magic-8-ball)
   - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
@@ -65,6 +69,10 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 - **File:** [terraform-basics.md](02-learning-resources/terraform-basics.md)
 - **Description:** An introduction to Terraform and its role in Infrastructure as Code.
 
+### 04-aws-terraform-learning-resources
+- **File:** [aws-terraform-learning-resources.md](02-learning-resources/aws-terraform-learning-resources.md)
+- **Description:** A collection of learning materials for AWS and Terraform. This guide includes links to official documentation, online learning platforms, hands-on practice resources, community-driven content, certification information, recommended books, YouTube channels, and relevant blogs. It serves as a central reference for anyone looking to deepen their knowledge of AWS and Terraform.
+
 ---
 
 ## Part 3: Basic Projects
@@ -80,6 +88,18 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 ### 03-rds-setup
 - **File:** [project-description.md](03-basic-projects/03-rds-setup/project-description.md)
 - **Description:** Instructions for setting up a simple RDS instance for databases.
+
+---
+
+## Part 4: Medium Projects
+
+### 01-3-Tier-VPC
+- **File:** [project-description.md](04-medium-projects/01-3-Tier-VPC-Setup/project-description.md)
+- **Description:** Guide to setting up a 3-tier VPC architecture with public and private subnets, NAT gateways, and routing tables for secure and scalable applications.
+
+### 02-SAM-magic-8-ball
+- **File:** [project-description.md](04-medium-projects/02-sam-magic-8-ball/project-description.md)
+- **Description:** This project is a serverless implementation of the Magic 8 Ball, featuring an interactive web interface. Powered by AWS Lambda for backend logic and hosted on S3 for the frontend, it delivers random responses to user questions for an engaging experience.
 
 ---
 
