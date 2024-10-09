@@ -68,6 +68,10 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 - **File:** [terraform-basics.md](02-learning-resources/terraform-basics.md)
 - **Description:** An introduction to Terraform and its role in Infrastructure as Code.
 
+### 03-aws-terraform-learning-resources
+- **File:** [aws-terraform-learning-resources.md](02-learning-resources/aws-terraform-learning-resources.md)
+- **Description:** A collection of learning materials for AWS and Terraform. This guide includes links to official documentation, online learning platforms, hands-on practice resources, community-driven content, certification information, recommended books, YouTube channels, and relevant blogs. It serves as a central reference for anyone looking to deepen their knowledge of AWS and Terraform.
+
 ---
 
 ## Part 3: Basic Projects
