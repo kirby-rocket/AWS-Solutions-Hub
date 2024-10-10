@@ -35,10 +35,10 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 - [Part 2: Learning Resources](#part-2-learning-resources)
 - [Part 3: Basic Projects](#part-3-basic-projects)
 - [Part 4: Medium Projects](#part-4-medium-projects)
-- [Getting Started](#getting-started)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+- [Getting Started](# 🚀 getting-started)
+- [Contributing](# 🤝 contributing)
+- [License](# 📄 license)
+- [Contact](# 📬 contact)
 
 ---
 
@@ -101,12 +101,13 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 ## 🚀 Getting Started
 
 1. **Fork or Clone the Repository:**
-   - Fork this repository to your own GitHub account or clone it to your local machine.
-   - If you want to contribute back, consider making a pull request with your changes.
+
+- To keep the main repository clean and maintainable, please fork this repository to your own GitHub account or clone it to your local machine. This way, you can work on your own version without affecting the original project.
+- If you want to contribute back, consider making a pull request with your changes instead of pushing directly to the main repository.
 
 2. **Follow the Setup Guides:**
-   - Navigate through the respective setup guides and project descriptions for detailed instructions.
-   - Each section includes step-by-step guidance to help you implement various AWS services effectively.
+
+- Navigate through the respective setup guides and project descriptions for detailed instructions. Each section includes step-by-step guidance to help you implement various AWS services effectively.
 
 ## 🤝 Contributing
 
