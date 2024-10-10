@@ -31,26 +31,27 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 
 ## 📚 Table of Contents
 
-- [  AWS-Projects-Hub](#aws-solutions-hub)
+- [AWS-Projects-Hub](#aws-solutions-hub)
   - [Description](#description)
   - [Maintainers](#maintainers)
   - [Table of Contents](#table-of-contents)
   - [Part 1: AWS Setup](#part-1-aws-setup)
-    - [01-aws-account-setup](#01-aws-account-setup)
-    - [02-aws-cli-setup](#02-aws-cli-setup)
+    - [01 AWS Account Setup](#01-aws-account-setup)
+    - [02 AWS CLI Setup](#02-aws-cli-setup)
   - [Part 2: Learning Resources](#part-2-learning-resources)
-    - [01-aws-concepts](#01-aws-concepts)
-    - [02-aws-services](#02-aws-services)
-    - [03-terraform-basics](#03-terraform-basics)
-    - [04-aws-terraform-learning-resources](#04-aws-terraform-learning-resources)
-    - [05-aws-certification-guide](#05-aws-certification-guide)
+    - [01 AWS Concepts](#01-aws-concepts)
+    - [02 AWS Sevices](#02-aws-services)
+    - [03 Terraform Basics](#03-terraform-basics)
+    - [04 AWS/Terraform Learning Resources](#04-aws-terraform-learning-resources)
+    - [05 AWS Certification Guide](#05-aws-certification-guide)
+    - [06 AWS Best Practices and Architecture](#06-aws-best-practices-and-architecture)
   - [Part 3: Basic Projects](#part-3-basic-projects)
-    - [01-ec2-web-server](#01-ec2-web-server)
-    - [02-s3-static-website](#02-s3-static-website)
-    - [03-rds-setup](#03-rds-setup)
+    - [01 EC2 Web Server](#01-ec2-web-server)
+    - [02 S3 Static Websit](#02-s3-static-website)
+    - [03 RDS Setup](#03-rds-setup)
   - [Part 4: Medium Projects](#part-4-medium-projects)
-    - [01-3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
-    - [02-SAM-magic-8-ball](#02-SAM-magic-8-ball)
+    - [01 3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
+    - [02 SAM-Magic-8-ball](#02-SAM-magic-8-ball)
   - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
@@ -91,6 +92,10 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 ### 05-aws-certification-guide
 - **File:** [aws-certification-guide.md](02-learning-resources/aws-certification-guide.md)
 - **Description:** A comprehensive guide to AWS certifications, including an overview of available certifications, recommended certification paths, study strategies, and a curated list of resources.
+
+### 06-aws-best-practices-and-architecture
+- **File:** [aws-best-practices-architecture.md](02-learning-resources/aws-best-practices-architecture.md)
+- **Description:** An overview of AWS architectural best practices, including the Well-Architected Framework, key design principles, reference architectures, and tools for creating AWS architecture diagrams. This guide helps in designing scalable, secure, and efficient solutions on AWS.
 
 ---
 
