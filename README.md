@@ -56,7 +56,9 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
   - [License](#license)
   - [Contact](#contact)
 
----
+<!-- ============================================ -->
+<!--                 AWS Setup                    -->
+<!-- ============================================ -->
 
 ## Part 1: AWS Setup
 
@@ -67,6 +69,10 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 ### 02-aws-cli-setup
 - **File:** [aws-cli-setup.md](01-aws-setup/aws-cli-setup.md)
 - **Description:** Instructions for installing and configuring the AWS Command Line Interface (CLI).
+
+<!-- ============================================ -->
+<!--             Learning Resources               -->
+<!-- ============================================ -->
 
 ## Part 2: Learning Resources
 
