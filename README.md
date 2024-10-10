@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://logos-world.net/wp-content/uploads/2021/08/Amazon-Web-Services-AWS-Logo.png" alt="Powered by AWS" width="200">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/2560px-Amazon_Web_Services_Logo.svg.png" alt="Powered by AWS" width="200">
 
   # AWS-Projects-Hub
 
@@ -140,6 +140,6 @@ For questions or feedback, feel free to reach out via [GitHub Issues](https://gi
 ---
 
 <div align="center">
-  <img src="https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_stacked_REV_SQ.91cd4af40773cbfbd15577a3c2b8a346fe3e8fa2.png" alt="Powered by AWS" width="100">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/2560px-Amazon_Web_Services_Logo.svg.png" alt="Powered by AWS" width="100">
   <p>Happy Learning and Building with AWS!</p>
 </div>
