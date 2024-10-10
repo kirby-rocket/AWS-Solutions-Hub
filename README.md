@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://logos-world.net/wp-content/uploads/2021/08/Amazon-Web-Services-AWS-Logo.png" alt="Powered by AWS" width="400">
+  <img src="https://logos-world.net/wp-content/uploads/2021/08/Amazon-Web-Services-AWS-Logo.png" alt="Powered by AWS" width="300">
 
   # AWS-Projects-Hub
 
