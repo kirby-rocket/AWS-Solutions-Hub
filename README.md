@@ -56,9 +56,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
   - [License](#license)
   - [Contact](#contact)
 
-//==============================================
-// Part 1: AWS Setup
-//==============================================
+---
 
 ## Part 1: AWS Setup
 
@@ -69,6 +67,8 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 ### 02-aws-cli-setup
 - **File:** [aws-cli-setup.md](01-aws-setup/aws-cli-setup.md)
 - **Description:** Instructions for installing and configuring the AWS Command Line Interface (CLI).
+
+---
 
 ## Part 2: Learning Resources
 
@@ -92,6 +92,8 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 - **File:** [aws-certification-guide.md](02-learning-resources/aws-certification-guide.md)
 - **Description:** A comprehensive guide to AWS certifications, including an overview of available certifications, recommended certification paths, study strategies, and a curated list of resources.
 
+---
+
 ## Part 3: Basic Projects
 
 ### 01-ec2-web-server
@@ -106,6 +108,8 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 - **File:** [project-description.md](03-basic-projects/03-rds-setup/project-description.md)
 - **Description:** Instructions for setting up a simple RDS instance for databases.
 
+---
+
 ## Part 4: Medium Projects
 
 ### 01-3-Tier-VPC
@@ -115,6 +119,8 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 ### 02-SAM-magic-8-ball
 - **File:** [project-description.md](04-medium-projects/02-sam-magic-8-ball/project-description.md)
 - **Description:** This project is a serverless implementation of the Magic 8 Ball, featuring an interactive web interface. Powered by AWS Lambda for backend logic and hosted on S3 for the frontend, it delivers random responses to user questions for an engaging experience.
+
+---
 
 ## Getting Started
 
@@ -127,17 +133,23 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 
 - Navigate through the respective setup guides and project descriptions for detailed instructions. Each section includes step-by-step guidance to help you implement various AWS services effectively.
 
+---
+
 ## Contributing
 
 Contributions are welcome! If you have any projects, improvements, or suggestions, feel free to open a pull request or create an issue.
+
+---
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+---
+
 ## Contact
 
-For questions or feedback, feel free to reach out via [GitHub Issues](https://github.com/kirby-rocket/AWS-Project-Hub/issues) or by contacting the maintainers directly.
+For questions or feedback, feel free to reach out via [GitHub Issues](https://github.com/kirby-rocket/AWS-Solutions-Hub/issues) or by contacting the maintainers directly.
 
 ---
 
