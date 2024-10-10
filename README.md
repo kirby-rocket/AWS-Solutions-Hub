@@ -16,7 +16,7 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
   <tr>
     <td align="center">
       <a href="https://www.linkedin.com/in/kumail-rizvi/">
-        <img src="https://github.com/kumail-raza.png" width="100px;" alt="Kumail Rizvi"/><br />
+        <img src="https://media.licdn.com/dms/image/v2/D4D03AQH2ZfVIAm9eKw/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1726753054679?e=1733961600&v=beta&t=ejFVp1BMtUTHeYERU-bDoIM1j9OD_uG-raugQgAG4co" width="100px;" alt="Kumail Rizvi"/><br />
         <sub><b>Kumail Rizvi</b></sub>
       </a>
     </td>
