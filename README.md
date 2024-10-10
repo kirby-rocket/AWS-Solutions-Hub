@@ -1,16 +1,16 @@
 <div align="center">
   <img src="https://logos-world.net/wp-content/uploads/2021/08/Amazon-Web-Services-AWS-Logo.png" alt="Powered by AWS" width="300">
 
-  # AWS-Projects-Hub
+  # AWS-Solutions-Hub
 
   <p>A comprehensive collection of AWS projects and resources</p>
 </div>
 
-## 📖 Description
+## Description
 
-Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collection of AWS projects, ranging from initial setup to advanced solutions. It aims to help users understand and implement various AWS services using **Terraform** for Infrastructure as Code (IaC). Whether you're a beginner looking to set up your first AWS account or an experienced developer seeking to expand your knowledge, you'll find valuable resources here.
+Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collection of AWS projects, ranging from initial setup to advanced solutions. It aims to help users understand and implement various AWS services using **Terraform** for Infrastructure as Code (IaC). Whether you're a beginner looking to set up your first AWS account or an experienced developer seeking to expand your knowledge, you'll find valuable resources here.
 
-## 👨‍💻 Maintainers
+## Maintainers
 
 <table>
   <tr>
@@ -31,7 +31,7 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 
 ## 📚 Table of Contents
 
-- [  AWS-Projects-Hub](#--aws-projects-hub)
+- [  AWS-Projects-Hub](#aws-solutions-hub)
   - [Description](#description)
   - [Maintainers](#maintainers)
   - [Table of Contents](#table-of-contents)
