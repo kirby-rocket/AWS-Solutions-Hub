@@ -31,14 +31,30 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 
 ## 📚 Table of Contents
 
-- [Part 1: AWS Setup](#part-1-aws-setup)
-- [Part 2: Learning Resources](#part-2-learning-resources)
-- [Part 3: Basic Projects](#part-3-basic-projects)
-- [Part 4: Medium Projects](#part-4-medium-projects)
-- [Getting Started](# 🚀 getting-started)
-- [Contributing](# 🤝 contributing)
-- [License](# 📄 license)
-- [Contact](# 📬 contact)
+- [  AWS-Projects-Hub](#--aws-projects-hub)
+  - [Description](#description)
+  - [Maintainers](#maintainers)
+  - [Table of Contents](#table-of-contents)
+  - [Part 1: AWS Setup](#part-1-aws-setup)
+    - [01-aws-account-setup](#01-aws-account-setup)
+    - [02-aws-cli-setup](#02-aws-cli-setup)
+  - [Part 2: Learning Resources](#part-2-learning-resources)
+    - [01-aws-concepts](#01-aws-concepts)
+    - [02-aws-services](#02-aws-services)
+    - [03-terraform-basics](#03-terraform-basics)
+    - [04-aws-terraform-learning-resources](#04-aws-terraform-learning-resources)
+    - [05-aws-certification-guide](#05-aws-certification-guide)
+  - [Part 3: Basic Projects](#part-3-basic-projects)
+    - [01-ec2-web-server](#01-ec2-web-server)
+    - [02-s3-static-website](#02-s3-static-website)
+    - [03-rds-setup](#03-rds-setup)
+  - [Part 4: Medium Projects](#part-4-medium-projects)
+    - [01-3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
+    - [02-SAM-magic-8-ball](#02-SAM-magic-8-ball)
+  - [Getting Started](#getting-started)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Contact](#contact)
 
 ---
 
@@ -98,7 +114,7 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 - **File:** [project-description.md](04-medium-projects/02-sam-magic-8-ball/project-description.md)
 - **Description:** This project is a serverless implementation of the Magic 8 Ball, featuring an interactive web interface. Powered by AWS Lambda for backend logic and hosted on S3 for the frontend, it delivers random responses to user questions for an engaging experience.
 
-## 🚀 Getting Started
+## Getting Started
 
 1. **Fork or Clone the Repository:**
 
@@ -109,17 +125,17 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 
 - Navigate through the respective setup guides and project descriptions for detailed instructions. Each section includes step-by-step guidance to help you implement various AWS services effectively.
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! If you have any projects, improvements, or suggestions, feel free to open a pull request or create an issue.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📬 Contact
+## Contact
 
-For questions or feedback, feel free to reach out via [GitHub Issues](https://github.com/yourusername/AWS-Project-Hub/issues) or by contacting the maintainers directly.
+For questions or feedback, feel free to reach out via [GitHub Issues](https://github.com/kirby-rocket/AWS-Project-Hub/issues) or by contacting the maintainers directly.
 
 ---
 
