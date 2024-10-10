@@ -20,6 +20,7 @@ The AWS Well-Architected Framework is a guide for designing and operating reliab
 3. **Reliability**
 4. **Performance Efficiency**
 5. **Cost Optimization**
+6. **Sustainability**
 
 Learn more: [AWS Well-Architected](https://aws.amazon.com/architecture/well-architected/)
 
