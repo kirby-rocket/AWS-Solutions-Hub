@@ -29,7 +29,7 @@ AWS offers a variety of certification paths to suit different roles and career g
 
 ### Download AWS Roadmap
 
-[AWS Certification Paths Guide (PDF)](AWS-Learning-and-Certification-Path.pdf)
+[AWS Learning Roadmap (PDF)](AWS-Learning-and-Certification-Path.pdf)
 
 This guide includes:
 - Detailed overview of all AWS certifications
