@@ -57,7 +57,7 @@ This guide provides a comprehensive list of learning resources for AWS and Terra
 
 ## YouTube Channels
 - [AWS Online Tech Talks](https://www.youtube.com/channel/UCT-nPlVzJI-ccQXlxjSvJmw)
-- [Terraform YouTube Channel](https://www.youtube.com/channel/UCTwxkG0vRdNIYcJ4rk74zXQ)
+- [Terraform YouTube Channel](https://www.youtube.com/channel/UC-AdvAxaagE9W2f0webyNUQ)
 
 ## Blogs and Articles
 - [AWS Architecture Blog](https://aws.amazon.com/blogs/architecture/)
