@@ -76,7 +76,7 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
 
 ### 05-aws-certification-guide
 - **File:** [aws-certification-guide.md](02-learning-resources/aws-certification-guide.md)
-- **Description:** An introduction to Terraform and its role in Infrastructure as Code.
+- **Description:** A comprehensive guide to AWS certifications, including an overview of available certifications, recommended certification paths, study strategies, and a curated list of resources.
 
 ---
 
