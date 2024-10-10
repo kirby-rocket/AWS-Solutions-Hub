@@ -22,7 +22,7 @@ Welcome to the **AWS-Project-Hub**! This repository is a comprehensive collectio
     </td>
     <td align="center">
       <a href="https://www.linkedin.com/in/amir-malaeb/">
-        <img src="https://github.com/amir-malaeb.png" width="100px;" alt="Amir Malaeb"/><br />
+        <img src="https://media.licdn.com/dms/image/v2/D5603AQGQR2GMFhEhnw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1726065541077?e=1733961600&v=beta&t=EvWKbaL6ELQjdI3y_g07RTbIQ5jHYHaqaSAjy0hFyeI" width="100px;" alt="Amir Malaeb"/><br />
         <sub><b>Amir Malaeb</b></sub>
       </a>
     </td>
