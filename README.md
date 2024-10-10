@@ -45,6 +45,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [04 AWS/Terraform Learning Resources](#04-aws-terraform-learning-resources)
     - [05 AWS Certification Guide](#05-aws-certification-guide)
     - [06 AWS Best Practices and Architecture](#06-aws-best-practices-and-architecture)
+    - [06 AWS DevOps and CI/CD](#07-aws-devops-cicd)
   - [Part 3: Basic Projects](#part-3-basic-projects)
     - [01 EC2 Web Server](#01-ec2-web-server)
     - [02 S3 Static Websit](#02-s3-static-website)
@@ -96,6 +97,10 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 ### 06-aws-best-practices-and-architecture
 - **File:** [aws-best-practices-architecture.md](02-learning-resources/aws-best-practices-architecture.md)
 - **Description:** An overview of AWS architectural best practices, including the Well-Architected Framework, key design principles, reference architectures, and tools for creating AWS architecture diagrams. This guide helps in designing scalable, secure, and efficient solutions on AWS.
+
+### 07-aws-devops-cicd
+- **File:** [aws-devops-cicd.md](02-learning-resources/aws-devops-cicd.md)
+- **Description:** A comprehensive guide to implementing DevOps practices and CI/CD pipelines on AWS. Covers key services, best practices, and real-world case studies for effective DevOps implementation.
 
 ---
 
