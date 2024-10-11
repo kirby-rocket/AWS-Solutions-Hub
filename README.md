@@ -119,20 +119,6 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 - **File:** [project-description.md](03-basic-projects/03-rds-setup/project-description.md)
 - **Description:** Instructions for setting up a simple RDS instance for databases.
 
-## Part 3: Basic Projects
-
-### 01-ec2-web-server
-- **File:** [project-description.md](03-basic-projects/01-ec2-web-server/project-description.md)
-- **Description:** Steps to create a basic EC2 instance that acts as a web server.
-
-### 02-s3-static-website
-- **File:** [project-description.md](03-basic-projects/02-s3-static-website/project-description.md)
-- **Description:** A guide on hosting a static website using Amazon S3.
-
-### 03-rds-setup
-- **File:** [project-description.md](03-basic-projects/03-rds-setup/project-description.md)
-- **Description:** Instructions for setting up a simple RDS instance for databases.
-
 ### 04-serverless-quote-api
 - **File:** [project-description.md](03-basic-projects/04-serverless-quote-api/project-description.md)
 - **Description:** Create a serverless API using AWS Lambda and API Gateway to serve random inspirational quotes. Includes setup instructions for AWS Console, CLI, and Terraform methods.
