@@ -45,11 +45,12 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [04 AWS/Terraform Learning Resources](#04-aws-terraform-learning-resources)
     - [05 AWS Certification Guide](#05-aws-certification-guide)
     - [06 AWS Best Practices and Architecture](#06-aws-best-practices-and-architecture)
-    - [06 AWS DevOps and CI/CD](#07-aws-devops-cicd)
+    - [07 AWS DevOps and CI/CD](#07-aws-devops-cicd)
   - [Part 3: Basic Projects](#part-3-basic-projects)
     - [01 EC2 Web Server](#01-ec2-web-server)
     - [02 S3 Static Websit](#02-s3-static-website)
     - [03 RDS Setup](#03-rds-setup)
+    - [04 Simple Serverless Quote API](#04-serverless-quote-api)
   - [Part 4: Medium Projects](#part-4-medium-projects)
     - [01 3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
     - [02 SAM-Magic-8-ball](#02-SAM-magic-8-ball)
@@ -62,7 +63,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 
 ## Part 1: AWS Setup
 
-### 01-aws-account-setup
+### 01 aws-account-setup
 - **File:** [aws-account-setup.md](01-aws-setup/aws-account-setup.md)
 - **Description:** A detailed guide on how to set up an AWS account.
 
@@ -117,6 +118,10 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 ### 03-rds-setup
 - **File:** [project-description.md](03-basic-projects/03-rds-setup/project-description.md)
 - **Description:** Instructions for setting up a simple RDS instance for databases.
+
+### 04-serverless-quote-api
+- **File:** [project-description.md](03-basic-projects/04-serverless-quote-api/project-description.md)
+- **Description:** Create a serverless API using AWS Lambda and API Gateway to serve random inspirational quotes. Includes setup instructions for AWS Console, CLI, and Terraform methods.
 
 ---
 
