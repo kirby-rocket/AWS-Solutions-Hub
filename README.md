@@ -63,7 +63,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 
 ## Part 1: AWS Setup
 
-### 01-aws-account-setup
+### 01 aws-account-setup
 - **File:** [aws-account-setup.md](01-aws-setup/aws-account-setup.md)
 - **Description:** A detailed guide on how to set up an AWS account.
 
