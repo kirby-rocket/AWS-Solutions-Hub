@@ -45,7 +45,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [04 AWS/Terraform Learning Resources](#04-aws-terraform-learning-resources)
     - [05 AWS Certification Guide](#05-aws-certification-guide)
     - [06 AWS Best Practices and Architecture](#06-aws-best-practices-and-architecture)
-    - [06 AWS DevOps and CI/CD](#07-aws-devops-cicd)
+    - [07 AWS DevOps and CI/CD](#07-aws-devops-cicd)
   - [Part 3: Basic Projects](#part-3-basic-projects)
     - [01 EC2 Web Server](#01-ec2-web-server)
     - [02 S3 Static Websit](#02-s3-static-website)
