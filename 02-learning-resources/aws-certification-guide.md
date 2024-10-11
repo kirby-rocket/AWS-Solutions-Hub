@@ -25,7 +25,7 @@ Each certification validates specific skills and knowledge related to AWS servic
 
 ## Certification Paths
 
-AWS offers a variety of certification paths to suit different roles and career goals. To help you navigate these options, we've prepared a comprehensive PDF guide outlining the various certification paths.
+AWS offers a variety of certification paths to suit different roles and career goals. To help you navigate these options, check this comprehensive PDF guide for NetCom Learning outlining the various certification paths.
 
 ### Download AWS Roadmap
 
