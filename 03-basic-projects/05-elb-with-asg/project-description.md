@@ -1,7 +1,7 @@
 # Create an Elastic Load Balancer with Auto Scaling Group
 
 ## Description
-This project demonstrates how to set up an Elastic Load Balancer (ELB) with an Auto Scaling Group (ASG) using Amazon EC2 instances. We will cover the AWS Management Console (GUI), AWS CLI, and Terraform methods to create a scalable and highly available web application infrastructure.
+This project demonstrates how to set up an Elastic Load Balancer (ELB) with an Auto Scaling Group (ASG) using Amazon EC2 instances. We will cover the AWS Management Console (GUI) and AWS CLI, to create a scalable and highly available web application infrastructure.
 
 ## Architecture Diagram
 
