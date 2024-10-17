@@ -53,6 +53,8 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [04 Simple Serverless Quote API](#04-serverless-quote-api)
     - [05 PHP Server](#05-php-server)
     - [06 CloudFormation VPC-EC2-ASG-ELB](#06-cloudformation-vpc-ec2-asg-elb)
+    - [07 Application Load Balancer with Auto Scaling Group](#07-elb-with-asg)
+
   - [Part 4: Medium Projects](#part-4-medium-projects)
     - [01 3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
     - [02 SAM-Magic-8-ball](#02-SAM-magic-8-ball)
@@ -131,6 +133,10 @@ Coming soon...
 ### 06-cloudformation-vpc-ec2-asg-elb
 - **File:** [project-description.md](03-basic-projects/06-cf-vpc-ec2-asg-elb/project-description.md)
 - **Description:** AWS CloudFormation Template to create a VPC, EC2 instances, Auto Scaling Group and an Application Load Balancer
+
+### 07-elb-with-asg
+- **File:** [project-description.md](03-basic-projects/07-elb-with-asg/project-description.md)
+- **Description:** Create an Elastic Load Balancer (ELB) with an Auto Scaling Group (ASG) using Amazon EC2 instances. Demonstrates high availability and scalability with setup instructions for AWS Console and CLI.
 
 ---
 
