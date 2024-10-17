@@ -182,7 +182,7 @@ Create a file named `scaling-config.json` with the following content:
     "PredefinedMetricType": "ASGAverageCPUUtilization"
   }
 }
-
+```
 ## Testing Your Setup
 
 1. Obtain the DNS name of your load balancer:
