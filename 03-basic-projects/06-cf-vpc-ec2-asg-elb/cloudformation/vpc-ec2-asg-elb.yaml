@@ -1,0 +1,441 @@
+Description:  This template deploys the following resources
+  VPC, with 2 AZs and a public and private subnet on each AZ.
+  Internet gateway, with a default route on the public subnets.  
+  NAT gateways (one in each AZ), and default routes for them in the private subnets.
+  EC2 instance in each private subnet, with a simple web page that displays the AZ of the instance.
+  Application Load Balancer that will distribute traffic between the EC2 instances.
+  Auto Scaling Group that will maintain the desired number of EC2 instances depending on the load. 
+  Security groups for the EC2 instances and the Application Load Balancer.
+
+#Parameters to be passed to the template at the time of deployment. 
+#You can pass these parameters through the AWS Management Console, AWS CLI, or AWS SDKs.
+#You can customize these parameters or use the default values at the time of deployment.
+Parameters:
+  ProjectName:
+    Description: The project name that is prefixed to resource names
+    Type: String
+    Default: WebApp
+
+  VpcCIDR:
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Type: String
+    Default: 10.0.0.0/16
+
+  PublicSubnet1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.1.0/24
+
+  PrivateSubnet1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the private subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.2.0/24
+
+  PublicSubnet2CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the second Availability Zone
+    Type: String
+    Default: 10.0.3.0/24
+
+  PrivateSubnet2CIDR:
+    Description: Please enter the IP range (CIDR notation) for the private subnet in the second Availability Zone
+    Type: String
+    Default: 10.0.4.0/24
+
+  InstanceType:
+    Description: EC2 WebServer  instance type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+    ConstraintDescription: Mst be a valid EC2 instance type.
+
+#Mappings are used to map keys to corresponding values that are used in the template depending on the region where the stack is being created.
+#In this template, we are using a mapping to map the region to the AMI ID of Amazon Linux 2023
+# You may need to update the AMI ID. You can find the latest AMI IDs on the AWS website or AWS Management Console.
+Mappings:
+  RegionMap:
+    us-east-1:
+     "AMI": "ami-0fff1b9a61dec8a5f"
+    us-east-2:
+     "AMI": "ami-09da212cf18033880"
+    us-west-1:
+      "AMI": "ami-09b2477d43bc5d0ac"
+    us-west-2:
+      "AMI": "ami-0d081196e3df05f4d"
+
+#Resources are the core of the template. They represent the different AWS components that will be created when the template is deployed.
+#All the resources are tagged with the project name to easily identify them in the AWS Management Console and for billing purposes.
+Resources:
+
+  # VPC resource creates a virtual network with the specified CIDR block. DNS hostnames and DNS support is enabled
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+      - Key: Name
+        Value: !Sub ${ProjectName}-VPC
+
+  # InternetGateway resource creates an internet gateway for internet access to the VPC.
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Sub ${ProjectName}-IGW
+
+  # VPCGatewayAttachment resource attaches the internet gateway to the VPC.
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # PublicSubnet resource creates a public subnet in the VPC
+  #The subnet will have a range of IP addresses from the specified CIDR block
+  #This assigns an availability zone for the subnet using the !Select function. 
+  #!GetAZs is used to get the list of availability zones in the region where the stack is being created 
+  #!Select [0, !GetAZs] will select the first one from that list.
+  #MapPublicIpOnLaunch is set to true to automatically assign public IP addresses to instances launched in this subnet.
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PublicSubnet1CIDR
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Public-Subnet-AZ1
+
+  # PrivateSubnet resource creates a private subnet in the VPC
+  #The instance launched in this subnet will not have a public IP address assigned to it. 
+  #This is used for resources that do not need to be accessed from the Internet.
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PrivateSubnet1CIDR
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Private-Subnet-AZ1
+
+  #We need to create a public subnet in the second Availability Zone for high availability and fault tolerance.
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PublicSubnet2CIDR
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Public-Subnet-AZ2
+
+  #We need to create a private subnet in the second Availability Zone for high availability and fault tolerance.
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PrivateSubnet2CIDR
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Private-Subnet-AZ2
+  
+  # Elastic IP for the Nat Gateway in AZ1
+  # This is used to assign a static IP address to the NAT Gateway in the first Availability Zone.
+  NatGateway1EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-ElasticIP-AZ1
+
+  # Elastic IP for the Nat Gateway in AZ2
+  # This is used to assign a static IP address to the NAT Gateway in the second Availability Zone.
+  NatGateway2EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-ElasticIP-AZ2
+
+  # Nat Gateway in the first Availability Zone.
+  # The NAT Gateway 1 needs to be created in the public subnet 1.
+  # This is used to provide internet access to the instance in the private subnet in the first Availability Zone.
+  NatGateway1:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGateway1EIP.AllocationId
+      SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Nat-Gateway-AZ1
+
+  # Nat Gateway in the second Availability Zone
+  # The NAT Gateway 2 needs to be created in the public subnet 2.
+  # This is used to provide internet access to the instance in the private subnet in the second Availability Zone.
+  NatGateway2:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGateway2EIP.AllocationId
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Nat-Gateway-AZ2
+
+  # RouteTable resource creates a route table for the VPC
+  # This route table will be associated with the public subnets to define the routing rules for the traffic.
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Public-Route-Table
+
+  # PublicRoute resource creates a route in the route table to the internet gateway, allowing traffic to flow to the Internet.
+  #The DestinationCidrBlock is set to 0.0.0.0/0, which is the CIDR block that matches all IP addresses. 
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  # PublicSubnetRouteTableAssociation resource associates the public route table with the public subnets
+  PublicSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
+  # PrivateRouteTable resource creates a route table for the VPC
+  # This route table will be associated with the private subnets to define the routing rules for the traffic.
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Private-Route-Table-AZ1
+
+  # PrivateRoute resource creates a route in the route table to the NAT Gateway, allowing traffic to flow from the private subnet to the Internet.
+  # This means that the instances in the private subnet can access the Internet through the NAT Gateway.
+  PrivateRoute1:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway1
+
+  # PrivateSubnetRouteTableAssociation resource associates the private route table with the private subnets
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      SubnetId: !Ref PrivateSubnet1
+
+  # We need to create a route table for the private subnet in the second Availability Zone.
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Private-Route-Table-AZ2
+
+  # We need to create a route in the route table to the NAT Gateway in the second Availability Zone.
+  PrivateRoute2:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway2
+
+  # PrivateSubnetRouteTableAssociation resource associates the private route table with the private subnets in the second Availability Zone.
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      SubnetId: !Ref PrivateSubnet2
+
+  # ALB Security Groups creates a security group that allows all traffic from the internet
+  # ‘SecurityGroupIngress’ is used to specify the ingress (incoming) rules for the security group. 
+  # This security group will be used by the Application Load Balancer to allow traffic on port 80 from anywhere in the internet.
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ALB Security Group
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-ALB-Security-Group
+
+  # EC2SecurityGroup allows you to specify which traffic is allowed to reach the instances that belong to this security group.
+  # In this case, we are allowing traffic on port 80 from the ALB Security Group.
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'My Security Group'
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        SourceSecurityGroupId:
+          Fn::GetAtt:
+          - ALBSecurityGroup
+          - GroupId
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-EC2-Security-Group
+
+  # LaunchTemplate resource creates a launch template that specifies the configuration of the EC2 instances that will be launched by the Auto Scaling Group.
+  #The image ID is selected based on the region where the stack is being created using the RegionMap mapping.
+  #The instance type is specified as a parameter when you lunch the stack.
+  #The security group is set to the EC2SecurityGroup that allows traffic from the ALB Security Group on port 80.
+  #The user data script installs Apache web server and creates a simple web page that displays the Availability Zone of the instance.
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: !Sub "${ProjectName}-LaunchTemplate"
+      LaunchTemplateData:
+        ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI] 
+        InstanceType: !Ref InstanceType
+        SecurityGroupIds:
+          - !Ref EC2SecurityGroup
+        UserData: 
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y httpd
+            systemctl start httpd
+            systemctl enable httpd
+            EC2AZ=$(TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/placement/availability-zone)
+            echo '<center><h1>This Amazon EC2 instance is located in Availability Zone: AZID </h1></center>' > /var/www/html/index.txt
+            sed "s/AZID/$EC2AZ/" /var/www/html/index.txt > /var/www/html/index.html
+
+  # AutoScalingGroup resource creates an Auto Scaling Group that will maintain the desired number of EC2 instances depending on the load.
+  # The instances will be launched in the private subnets within two AZs using the launch template that we created earlier.
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones:
+        - !Select [ 0, !GetAZs '' ]
+        - !Select [ 1, !GetAZs '' ]
+      VPCZoneIdentifier:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      HealthCheckGracePeriod: 300 # The amount of time, in seconds, after an instance comes into service before checking its health
+      HealthCheckType: ELB        # The service to use for the health checks. Here we are using the Application Load Balancer
+      MinSize: 2                  # The minimum number of instances in the Auto Scaling Group
+      MaxSize: 4                  # The maximum number of instances in the Auto Scaling Group
+      DesiredCapacity: 2          # The desired number of instances in the Auto Scaling Group   
+      TargetGroupARNs:
+        - !Ref EC2TargetGroup     # The target group of the ALB to associate with the instances in the Auto Scaling Group
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Instance
+          PropagateAtLaunch: true
+
+  # ScalingPolicy resource creates a target tracking scaling policy for the Auto Scaling Group.
+  ScalingPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      PolicyType: TargetTrackingScaling
+      TargetTrackingConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ASGAverageCPUUtilization    # The metric type to use for the target tracking scaling policy
+        TargetValue: 50.0                                   
+
+  # Target Group for the Application Load Balancer
+  # This sets up a target group for the ALB to route HTTP traffic on port 80 to the two EC2 instances, with health checks to ensure the instances are healthy.
+  EC2TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30  # The interval between health checks
+      HealthCheckProtocol: HTTP       # The protocol to use for the health check
+      HealthCheckTimeoutSeconds: 15   # The amount of time, in seconds, during which no response means a failed health check
+      HealthyThresholdCount: 5        # The number of consecutive successful health checks required before considering an unhealthy target healthy
+      Matcher:
+        HttpCode: '200'               # The HTTP codes to use when checking for a successful response from a target
+      Name: EC2TargetGroup
+      Port: 80                        # The port on which the targets receive traffic
+      Protocol: HTTP                  # The protocol to use for routing traffic to the targets
+      TargetGroupAttributes:
+      - Key: deregistration_delay.timeout_seconds # The amount of time, in seconds, for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused
+        Value: '20'  
+      UnhealthyThresholdCount: 3      # The number of consecutive failed health checks required before considering a target unhealthy
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Target-Group
+
+  # ALBListener resource creates a listener for the Application Load Balancer
+  # The listener listens on port 80 and forwards traffic to the target group that we created earlier.
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref EC2TargetGroup
+      LoadBalancerArn: !Ref ApplicationLoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  # ApplicationLoadBalancer resource creates an Application Load Balancer
+  # The Application Load Balancer distributes incoming application traffic across the EC2 instances.
+  # The Application Load Balancer is set to internet-facing and is associated with the public subnets.
+  # The security group is set to the ALBSecurityGroup that allows traffic from the internet on port 80.
+  ApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internet-facing
+      Subnets:
+      - !Ref PublicSubnet1
+      - !Ref PublicSubnet2
+      SecurityGroups:
+        - !GetAtt ALBSecurityGroup.GroupId
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Application-Load-Balancer
+
+# Outputs section of the template allows you to define the outputs of the template that you want to be displayed after the stack is created.
+# In this template, we are outputting the URL of the website that is served by the Application Load Balancer.
+Outputs:
+  LoadBalancerDNSName:
+    Description: URL of the website
+    Value: !Join
+      - ''
+      - - 'http://'
+        - !GetAtt ApplicationLoadBalancer.DNSName
