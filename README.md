@@ -51,7 +51,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [02 S3 Static Websit](#02-s3-static-website)
     - [03 RDS Setup](#03-rds-setup)
     - [04 Simple Serverless Quote API](#04-serverless-quote-api)
-    - [05 Application Load Balancer with Auto Scaling Group](#05-elb-with-asg)
+    - [06 Application Load Balancer with Auto Scaling Group](#06-elb-with-asg)
   - [Part 4: Medium Projects](#part-4-medium-projects)
     - [01 3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
     - [02 SAM-Magic-8-ball](#02-SAM-magic-8-ball)
@@ -124,7 +124,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 - **File:** [project-description.md](03-basic-projects/04-serverless-quote-api/project-description.md)
 - **Description:** Create a serverless API using AWS Lambda and API Gateway to serve random inspirational quotes. Includes setup instructions for AWS Console, CLI, and Terraform methods.
 
-### 05-elb-with-asg
+### 06-elb-with-asg
 - **File:** [project-description.md](03-basic-projects/05-elb-with-asg/project-description.md)
 - **Description:** Create an Elastic Load Balancer (ELB) with an Auto Scaling Group (ASG) using Amazon EC2 instances. Demonstrates high availability and scalability with setup instructions for AWS Console and CLI.
 
