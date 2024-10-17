@@ -125,7 +125,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 - **Description:** Create a serverless API using AWS Lambda and API Gateway to serve random inspirational quotes. Includes setup instructions for AWS Console, CLI, and Terraform methods.
 
 ### 06-elb-with-asg
-- **File:** [project-description.md](03-basic-projects/05-elb-with-asg/project-description.md)
+- **File:** [project-description.md](03-basic-projects/06-elb-with-asg/project-description.md)
 - **Description:** Create an Elastic Load Balancer (ELB) with an Auto Scaling Group (ASG) using Amazon EC2 instances. Demonstrates high availability and scalability with setup instructions for AWS Console and CLI.
 
 ---
