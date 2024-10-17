@@ -129,7 +129,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 Coming soon...
 
 ### 06-cloudformation-vpc-ec2-asg-elb
-- **File:** [project-description.md](03-basic-projects/06-iac-cloudformation/project-description.md)
+- **File:** [project-description.md](03-basic-projects/06-cf-vpc-ec2-asg-elb/project-description.md)
 - **Description:** AWS CloudFormation Template to create a VPC, EC2 instances, Auto Scaling Group and an Application Load Balancer
 
 ---
