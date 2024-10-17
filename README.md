@@ -51,7 +51,8 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [02 S3 Static Websit](#02-s3-static-website)
     - [03 RDS Setup](#03-rds-setup)
     - [04 Simple Serverless Quote API](#04-serverless-quote-api)
-    - [05 IaC with CloudFormation](#05-iac-cloudformation)
+    - [05 IaC with Terraform](#05-iac-terraform)
+    - [06 IaC with CloudFormation](#06-iac-cloudformation)
   - [Part 4: Medium Projects](#part-4-medium-projects)
     - [01 3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
     - [02 SAM-Magic-8-ball](#02-SAM-magic-8-ball)
@@ -124,8 +125,11 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 - **File:** [project-description.md](03-basic-projects/04-serverless-quote-api/project-description.md)
 - **Description:** Create a serverless API using AWS Lambda and API Gateway to serve random inspirational quotes. Includes setup instructions for AWS Console, CLI, and Terraform methods.
 
-### 05-iac-cloudformation
-- **File:** [project-description.md](03-basic-projects/05-iac-cloudformation/project-description.md)
+### 05-iac-terraform
+Coming soon...
+
+### 06-iac-cloudformation
+- **File:** [project-description.md](03-basic-projects/06-iac-cloudformation/project-description.md)
 - **Description:** AWS CloudFormation Template to create a VPC, EC2 instances, Auto Scaling Group and an Application Load Balancer
 
 ---
