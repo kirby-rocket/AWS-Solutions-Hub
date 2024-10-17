@@ -8,7 +8,7 @@
 
 ## Description
 
-Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collection of AWS projects, ranging from initial setup to advanced solutions. It aims to help users understand and implement various AWS services using **Terraform** for Infrastructure as Code (IaC). Whether you're a beginner looking to set up your first AWS account or an experienced developer seeking to expand your knowledge, you'll find valuable resources here.
+Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collection of AWS projects, ranging from initial setup to advanced solutions. It aims to help users understand and implement various AWS services using **Terraform** or **CloudFormation** for Infrastructure as Code (IaC). Whether you're a beginner looking to set up your first AWS account or an experienced developer seeking to expand your knowledge, you'll find valuable resources here.
 
 ## Maintainers
 
@@ -51,6 +51,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [02 S3 Static Websit](#02-s3-static-website)
     - [03 RDS Setup](#03-rds-setup)
     - [04 Simple Serverless Quote API](#04-serverless-quote-api)
+    - [05 IaC with CloudFormation](#05-iac-cloudformation)
   - [Part 4: Medium Projects](#part-4-medium-projects)
     - [01 3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
     - [02 SAM-Magic-8-ball](#02-SAM-magic-8-ball)
@@ -122,6 +123,10 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
 ### 04-serverless-quote-api
 - **File:** [project-description.md](03-basic-projects/04-serverless-quote-api/project-description.md)
 - **Description:** Create a serverless API using AWS Lambda and API Gateway to serve random inspirational quotes. Includes setup instructions for AWS Console, CLI, and Terraform methods.
+
+### 05-iac-cloudformation
+- **File:** [project-description.md](03-basic-projects/05-iac-cloudformation/project-description.md)
+- **Description:** AWS CloudFormation Template to create a VPC, EC2 instances, Auto Scaling Group and an Application Load Balancer
 
 ---
 
