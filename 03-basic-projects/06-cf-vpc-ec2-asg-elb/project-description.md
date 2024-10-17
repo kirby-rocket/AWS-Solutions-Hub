@@ -75,10 +75,10 @@ You can deploy this CloudFormation template using the AWS Management Console, AW
 
 #### 5.1.2 AWS CLI
 
-From the folder 06-iac-cloudformation, you can run the following command to create the stack:
+From the current directory, you can run the following command to create the stack:
 
 ```sh
-aws cloudformation create-stack --stack-name web-app-stack --template-body file://template/vpc-ec2-asg-elb.yaml --parameters ParameterKey=ProjectName,ParameterValue=WebApp ParameterKey=VpcCIDR,ParameterValue=10.0.0.0/16 ParameterKey=PublicSubnet1CIDR,ParameterValue=10.0.1.0/24 ParameterKey=PrivateSubnet1CIDR,ParameterValue=10.0.2.0/24 ParameterKey=PublicSubnet2CIDR,ParameterValue=10.0.3.0/24 ParameterKey=PrivateSubnet2CIDR,ParameterValue=10.0.4.0/24
+aws cloudformation create-stack --stack-name web-app-stack --template-body file://cloudformation/vpc-ec2-asg-elb.yaml --parameters ParameterKey=ProjectName,ParameterValue=WebApp ParameterKey=VpcCIDR,ParameterValue=10.0.0.0/16 ParameterKey=PublicSubnet1CIDR,ParameterValue=10.0.1.0/24 ParameterKey=PrivateSubnet1CIDR,ParameterValue=10.0.2.0/24 ParameterKey=PublicSubnet2CIDR,ParameterValue=10.0.3.0/24 ParameterKey=PrivateSubnet2CIDR,ParameterValue=10.0.4.0/24
 ```
 
 To check the status of the stack, you can run the following command:
@@ -90,7 +90,7 @@ aws cloudformation describe-stacks --stack-name web-app-stack
 To update the stack after a modification, you can run the following command:
 
 ```sh
-aws cloudformation update-stack --stack-name web-app-stack --template-body file://template/vpc-ec2-asg-elb.yaml
+aws cloudformation update-stack --stack-name web-app-stack --template-body file://cloudformation/vpc-ec2-asg-elb.yaml
 ```
 
 To list the resources of the stack, you can run the following command:
