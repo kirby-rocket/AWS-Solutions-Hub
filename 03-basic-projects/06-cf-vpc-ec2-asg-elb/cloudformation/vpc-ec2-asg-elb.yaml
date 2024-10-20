@@ -78,6 +78,7 @@ Mappings:
       "AMI": "ami-0d081196e3df05f4d"
 
 #Conditions are used to control the creation of resources based on the input parameters or other conditions.
+#In this template, we are using a condition to check if the HostedZoneId and DomainName parameters are provided to create a Route 53 record.
 Conditions:
   CreateRoute53Record: !And
     - !Not [!Equals [!Ref HostedZoneId, ""]]
