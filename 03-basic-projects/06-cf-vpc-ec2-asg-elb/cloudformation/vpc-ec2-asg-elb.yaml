@@ -6,6 +6,7 @@ Description:  This template deploys the following resources
   Application Load Balancer that will distribute traffic between the EC2 instances.
   Auto Scaling Group that will maintain the desired number of EC2 instances depending on the load. 
   Security groups for the EC2 instances and the Application Load Balancer.
+  Optional - Route 53 record to point to the Application Load Balancer.
 
 #Parameters to be passed to the template at the time of deployment. 
 #You can pass these parameters through the AWS Management Console, AWS CLI, or AWS SDKs.
@@ -51,7 +52,16 @@ Parameters:
       - t2.small
       - t2.medium
       - t2.large
-    ConstraintDescription: Mst be a valid EC2 instance type.
+    ConstraintDescription: Must be a valid EC2 instance type.
+
+  HostedZoneId:
+    Description: Optional - The ID of the Route 53 hosted zone if you want to create a Route 53 record
+    Type: String
+    Default: ""
+  DomainName:
+    Description: Optional - The domain name if you want to create a Route 53 record
+    Type: String
+    Default: ""
 
 #Mappings are used to map keys to corresponding values that are used in the template depending on the region where the stack is being created.
 #In this template, we are using a mapping to map the region to the AMI ID of Amazon Linux 2023
@@ -66,6 +76,12 @@ Mappings:
       "AMI": "ami-09b2477d43bc5d0ac"
     us-west-2:
       "AMI": "ami-0d081196e3df05f4d"
+
+#Conditions are used to control the creation of resources based on the input parameters or other conditions.
+Conditions:
+  CreateRoute53Record: !And
+    - !Not [!Equals [!Ref HostedZoneId, ""]]
+    - !Not [!Equals [!Ref DomainName, ""]]
 
 #Resources are the core of the template. They represent the different AWS components that will be created when the template is deployed.
 #All the resources are tagged with the project name to easily identify them in the AWS Management Console and for billing purposes.
@@ -430,6 +446,19 @@ Resources:
         - Key: Name
           Value: !Sub ${ProjectName}-Application-Load-Balancer
 
+  # Route53RecordSet resource creates a Route 53 record that points to the Application Load Balancer
+  # This allows you to access the website served by the Application Load Balancer using the domain name specified in the parameters.
+  Route53RecordSet:
+    Type: AWS::Route53::RecordSet
+    Condition: CreateRoute53Record
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt ApplicationLoadBalancer.DNSName
+        HostedZoneId: !GetAtt ApplicationLoadBalancer.CanonicalHostedZoneID
+
 # Outputs section of the template allows you to define the outputs of the template that you want to be displayed after the stack is created.
 # In this template, we are outputting the URL of the website that is served by the Application Load Balancer.
 Outputs:
@@ -439,3 +468,8 @@ Outputs:
       - ''
       - - 'http://'
         - !GetAtt ApplicationLoadBalancer.DNSName
+
+  Route53Record:
+    Condition: CreateRoute53Record
+    Description: The Route 53 record for the Application Load Balancer
+    Value: !Ref DomainName
