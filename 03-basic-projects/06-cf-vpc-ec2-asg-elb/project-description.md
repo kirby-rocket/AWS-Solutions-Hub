@@ -1,6 +1,8 @@
 # AWS CloudFormation Template to create a VPC, EC2, ASG and ALB
 
-This CloudFormation template deploys a robust network architecture on AWS following the best practice. It includes a VPC, subnets, NAT gateways, EC2 instances, Auto Scaling Group (ASG) and an Application Load Balancer (ALB). The template also sets up the necessary security groups for the EC2 instances and the ALB.
+This CloudFormation template deploys a robust network architecture on AWS following the best practice. It includes a VPC, subnets, NAT gateways, EC2 instances, Auto Scaling Group (ASG) and an Application Load Balancer (ALB). The template also sets up the necessary security groups for the EC2 instances and the ALB. Here is the architecture diagram:
+
+![Architecture diagram](./diagram/EC2-ASG-ELB.png)
 
 ## 1. Description
 
@@ -13,6 +15,7 @@ This template performs the following tasks:
 - Create an Auto Scaling Group which will Launch two EC2 instances in private subnets with a simple web page displaying the instance's AZ.
 - Sets up an Application Load Balancer to distribute traffic between the EC2 instances.
 - Creates the necessary security groups for the EC2 instances and the ALB.
+- Optional: Sets up a Route 53 record to make your domain name act like an alias to the Application Load Balancer
 
 ## 2. Parameters
 
@@ -26,6 +29,8 @@ The template accepts the following parameters:
 | `PrivateSubnet1CIDR` | The IP range (CIDR notation) for the private subnet in the first Availability Zone | String | 10.0.2.0/24 |
 | `PublicSubnet2CIDR` | The IP range (CIDR notation) for the public subnet in the second Availability Zone | String | 10.0.3.0/24 |
 | `PrivateSubnet2CIDR` | The IP range (CIDR notation) for the private subnet in the second Availability Zone | String | 10.0.4.0/24 |
+| `HostedZoneId` | Optional - The ID of the Route 53 hosted zone to use for creating a Route 53 record | String |  |
+| `DomainName` | Optional - The domain name to use for creating a Route 53 record | String |  |
 
 ## 3. Resources
 
@@ -41,6 +46,7 @@ The template creates the following resources:
 - **EC2 instance**: Each EC2 instance launched by the ASG will run a simple web server to display the current availability zone.
 - **Application Load Balancer**: An ALB in the public subnet to distribute the traffic between the EC2 instances.
 - **Security Groups**: Security groups as firewall to control the network access to the EC2 instances and the ALB.
+- **Route 53 record**: Route 53 record with a simple routing from the domain name to the  the Application Load Balancer.
 
 All the resources are tagged with the project name to easily identify them in the AWS Management Console and for billing purposes.
 
@@ -51,6 +57,7 @@ The template provides the following outputs:
 | Output | Description |
 |--------|-------------|
 | `LoadBalancerDNSName` | The DNS name of the Application Load Balancer |
+| `Route53Record` | The domain name of your Route 53 hosted zone |
 
 ## 5. Usage
 
@@ -75,10 +82,22 @@ You can deploy this CloudFormation template using the AWS Management Console, AW
 
 #### 5.1.2 AWS CLI
 
-From the current directory, you can run the following command to create the stack:
+Create the stack without a Route 53 record by running the following command from the current directory:
 
 ```sh
 aws cloudformation create-stack --stack-name web-app-stack --template-body file://cloudformation/vpc-ec2-asg-elb.yaml --parameters ParameterKey=ProjectName,ParameterValue=WebApp ParameterKey=VpcCIDR,ParameterValue=10.0.0.0/16 ParameterKey=PublicSubnet1CIDR,ParameterValue=10.0.1.0/24 ParameterKey=PrivateSubnet1CIDR,ParameterValue=10.0.2.0/24 ParameterKey=PublicSubnet2CIDR,ParameterValue=10.0.3.0/24 ParameterKey=PrivateSubnet2CIDR,ParameterValue=10.0.4.0/24
+```
+
+To create the stack with a Route 53 record that will act as an alias to the ALB, run the following command from the current directory. Make sure to replace the HostedZoneId and DomainName values with yours. The hosted zone ID of the domain name can be obtained with the next command
+
+```sh
+aws cloudformation create-stack --stack-name web-app-stack --template-body file://cloudformation/vpc-ec2-asg-elb.yaml --parameters ParameterKey=ProjectName,ParameterValue=WebApp ParameterKey=VpcCIDR,ParameterValue=10.0.0.0/16 ParameterKey=PublicSubnet1CIDR,ParameterValue=10.0.1.0/24 ParameterKey=PrivateSubnet1CIDR,ParameterValue=10.0.2.0/24 ParameterKey=PublicSubnet2CIDR,ParameterValue=10.0.3.0/24 ParameterKey=PrivateSubnet2CIDR,ParameterValue=10.0.4.0/24 ParameterKey=HostedZoneId,ParameterValue=myHostedZoneId ParameterKey=DomainName,ParameterValue=example.com
+```
+
+Use the following command to get the hosted zone ID for your domain name. Replace example.com. with your actual domain name (note the trailing dot).
+
+```sh
+aws route53 list-hosted-zones --query "HostedZones[?Name=='example.com.'].Id" --output text
 ```
 
 To check the status of the stack, you can run the following command:
@@ -99,7 +118,7 @@ To list the resources of the stack, you can run the following command:
 aws cloudformation list-stack-resources --stack-name web-app-stack
 ```
 
-Use the following command to get the DNS name
+Use the following command to get the DNS name of the ALB
 
 ```sh
 aws cloudformation describe-stacks --stack-name web-app-stack --query "Stacks[0].Outputs[?OutputKey=='LoadBalancerDNSName'].OutputValue" --output text
@@ -109,7 +128,7 @@ aws cloudformation describe-stacks --stack-name web-app-stack --query "Stacks[0]
 
 #### 5.2.1 Application Load Balancer
 
-After the stack is created, you can access the web application using the DNS name of the Application Load Balancer, which is provided in the stack outputs. You can just open the URL with your browser. By clicking many times, you can see that the availability zone that is displayed is alternating.
+After the stack is created, you can access the web application using your domain name or the DNS name of the Application Load Balancer, which is provided in the stack outputs. You can just open the URL with your browser. By clicking many times, you can see that the availability zone that is displayed is alternating.
 This shows the load balancer is effectively load balancing across both EC2 instances across two availability zones.
 
 #### 5.2.2 Auto Scaling Group
