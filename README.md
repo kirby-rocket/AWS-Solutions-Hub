@@ -58,6 +58,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [01 3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
     - [02 SAM-Magic-8-ball](#02-SAM-magic-8-ball)
   - [Part 5: Advanced Projects](#part-5-advanced-projects)
+    - [01 AWS Architecture Diagram Generator with AI](#01-AWS-architecture-diagram-generator)
   - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
