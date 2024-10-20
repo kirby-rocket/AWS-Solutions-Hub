@@ -54,10 +54,10 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [05 PHP Server](#05-php-server)
     - [06 CloudFormation VPC-EC2-ASG-ELB](#06-cloudformation-vpc-ec2-asg-elb)
     - [07 Application Load Balancer with Auto Scaling Group](#07-elb-with-asg)
-
   - [Part 4: Medium Projects](#part-4-medium-projects)
     - [01 3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
     - [02 SAM-Magic-8-ball](#02-SAM-magic-8-ball)
+  - [Part 5: Advanced Projects](#part-5-advanced-projects)
   - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
@@ -152,6 +152,14 @@ Coming soon...
 
 ---
 
+## Part 5: Advanced Projects
+
+### 01-AWS-architecture-diagram-generator
+- **File:** [project-description.md](05-advanced-projects/01-AWS-architecture-diagram-generator/project-description.md)
+- **Description:** This project demonstrates how to create an AI-powered AWS architecture diagram generator using Next.js, React, and Amazon Bedrock with Claude 3.5 Sonnet.
+
+
+---
 ## Getting Started
 
 1. **Fork or Clone the Repository:**
