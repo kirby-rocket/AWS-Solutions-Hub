@@ -54,6 +54,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [05 PHP Server](#05-php-server)
     - [06 CloudFormation VPC-EC2-ASG-ELB](#06-cloudformation-vpc-ec2-asg-elb)
     - [07 Application Load Balancer with Auto Scaling Group](#07-elb-with-asg)
+    - [08 Serverless DynamoDB CRUD Operations](#08-serverless-CRUD)  
   - [Part 4: Medium Projects](#part-4-medium-projects)
     - [01 3-Tier-VPC (Console and CLI)](#01-3-Tier-VPC)
     - [02 SAM-Magic-8-ball](#02-SAM-magic-8-ball)
@@ -138,6 +139,10 @@ Coming soon...
 ### 07-elb-with-asg
 - **File:** [project-description.md](03-basic-projects/07-elb-with-asg/project-description.md)
 - **Description:** Create an Elastic Load Balancer (ELB) with an Auto Scaling Group (ASG) using Amazon EC2 instances. Demonstrates high availability and scalability with setup instructions for AWS Console and CLI.
+
+### 08-serverless-CRUD
+- **File:** [project-description.md](03-basic-projects/08-serverless-CRUD/project-description.md)
+- **Description:** This project demonstrates how to create a serverless application that performs CRUD (Create, Read, Update, Delete) operations on a DynamoDB table using AWS Lambda and API Gateway.
 
 ---
 
