@@ -1,7 +1,7 @@
 # Serverless DynamoDB CRUD Operations
 
 ## Description
-This project demonstrates how to create a serverless application that performs CRUD (Create, Read, Update, Delete) operations on a DynamoDB table using AWS Lambda and API Gateway. The implementation follows the principle of least privilege with specific policies for each Lambda function.
+This project demonstrates how to create a serverless application that performs CRUD (Create, Read, Update, Delete) operations on a DynamoDB table using AWS Lambda and API Gateway using both the AWS console and the CLI. The implementation follows the principle of least privilege with specific policies for each Lambda function.
 
 ## Architecture Diagram
 
@@ -476,6 +476,331 @@ curl -X DELETE \
 3. Delete the DynamoDB table
 4. Delete the IAM policies
 5. Delete the Lambda execution roles
+
+# Method 2: AWS CLI Implementation
+
+This section provides a complete guide for implementing the serverless CRUD application using AWS CLI commands. All commands are shown in sequence and can be run in a terminal or command prompt.
+
+## Prerequisites for CLI Method
+- AWS CLI installed and configured with appropriate permissions
+- jq tool installed (optional, but helpful for JSON processing)
+- A terminal or command prompt
+- Python 3.9 or later installed
+
+---
+
+## Step-by-Step CLI Implementation
+
+### Step 1: Set Up Environment Variables
+```bash
+# Set your AWS region
+export AWS_REGION="us-east-1"
+
+# Get your AWS account ID
+export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+```
+
+### Step 2: Create DynamoDB Table
+```bash
+aws dynamodb create-table \
+    --table-name notes \
+    --attribute-definitions AttributeName=id,AttributeType=S \
+    --key-schema AttributeName=id,KeyType=HASH \
+    --billing-mode PAY_PER_REQUEST \
+    --region ${AWS_REGION}
+```
+
+### Step 3: Create IAM Roles and Policies
+
+First, create the trust policy document:
+```bash
+cat > trust-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+```
+
+Create policy documents for each Lambda function:
+
+```bash
+# Create Note Policy
+cat > createNote-policy.json << 'EOF'
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:PutItem"
+            ],
+            "Resource": "arn:aws:dynamodb:*:*:table/notes"
+        }
+    ]
+}
+EOF
+
+# Read Note Policy
+cat > readNote-policy.json << 'EOF'
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:GetItem"
+            ],
+            "Resource": "arn:aws:dynamodb:*:*:table/notes"
+        }
+    ]
+}
+EOF
+
+# Update Note Policy
+cat > updateNote-policy.json << 'EOF'
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:UpdateItem"
+            ],
+            "Resource": "arn:aws:dynamodb:*:*:table/notes"
+        }
+    ]
+}
+EOF
+
+# Delete Note Policy
+cat > deleteNote-policy.json << 'EOF'
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:DeleteItem"
+            ],
+            "Resource": "arn:aws:dynamodb:*:*:table/notes"
+        }
+    ]
+}
+EOF
+```
+
+Create roles and attach policies:
+```bash
+# Create roles and attach policies for each function
+for func in create read update delete; do
+    # Create role
+    aws iam create-role \
+        --role-name ${func}NoteLambdaRole \
+        --assume-role-policy-document file://trust-policy.json
+
+    # Attach basic Lambda execution role
+    aws iam attach-role-policy \
+        --role-name ${func}NoteLambdaRole \
+        --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+    # Create function-specific policy
+    POLICY_ARN=$(aws iam create-policy \
+        --policy-name ${func}NotePolicy \
+        --policy-document file://${func}Note-policy.json \
+        --query 'Policy.Arn' --output text)
+
+    # Attach the specific policy
+    aws iam attach-role-policy \
+        --role-name ${func}NoteLambdaRole \
+        --policy-arn $POLICY_ARN
+
+    echo "Created and configured role for ${func}Note"
+done
+
+# Wait for roles to propagate
+sleep 10
+```
+
+### Step 4: Create Lambda Functions
+
+Create Python files for each function:
+
+```bash
+# Create Note Lambda
+cat > createNote.py << 'EOF'
+import json
+import boto3
+import uuid
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('notes')
+
+def lambda_handler(event, context):
+    try:
+        body = json.loads(event['body'])
+        item = {
+            'id': str(uuid.uuid4()),
+            'title': body['title'],
+            'content': body['content']
+        }
+        table.put_item(Item=item)
+        return {
+            'statusCode': 201,
+            'headers': {
+                'Content-Type': 'application/json'
+            },
+            'body': json.dumps({
+                'message': 'Note created successfully',
+                'id': item['id']
+            })
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json'
+            },
+            'body': json.dumps({
+                'error': str(e)
+            })
+        }
+EOF
+
+# Create deployment packages
+zip createNote.zip createNote.py
+
+# Create Lambda function
+aws lambda create-function \
+    --function-name createNote \
+    --runtime python3.9 \
+    --handler createNote.lambda_handler \
+    --role arn:aws:iam::${ACCOUNT_ID}:role/createNoteLambdaRole \
+    --zip-file fileb://createNote.zip
+
+# Repeat similar process for other functions (readNote, updateNote, deleteNote)
+```
+
+### Step 5: Create API Gateway
+
+```bash
+# Create API
+API_ID=$(aws apigateway create-rest-api \
+    --name NotesAPI \
+    --endpoint-configuration types=REGIONAL \
+    --query 'id' --output text)
+
+# Get root resource ID
+ROOT_RESOURCE_ID=$(aws apigateway get-resources \
+    --rest-api-id $API_ID \
+    --query 'items[0].id' --output text)
+
+# Create /notes resource
+NOTES_RESOURCE_ID=$(aws apigateway create-resource \
+    --rest-api-id $API_ID \
+    --parent-id $ROOT_RESOURCE_ID \
+    --path-part notes \
+    --query 'id' --output text)
+
+# Create /notes/{id} resource
+NOTES_ID_RESOURCE_ID=$(aws apigateway create-resource \
+    --rest-api-id $API_ID \
+    --parent-id $NOTES_RESOURCE_ID \
+    --path-part {id} \
+    --query 'id' --output text)
+
+# Create POST method and integration
+aws apigateway put-method \
+    --rest-api-id $API_ID \
+    --resource-id $NOTES_RESOURCE_ID \
+    --http-method POST \
+    --authorization-type NONE
+
+aws apigateway put-integration \
+    --rest-api-id $API_ID \
+    --resource-id $NOTES_RESOURCE_ID \
+    --http-method POST \
+    --type AWS_PROXY \
+    --integration-http-method POST \
+    --uri arn:aws:apigateway:${AWS_REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS_REGION}:${ACCOUNT_ID}:function:createNote/invocations
+
+# Deploy API
+aws apigateway create-deployment \
+    --rest-api-id $API_ID \
+    --stage-name prod
+
+# Add Lambda permissions
+aws lambda add-permission \
+    --function-name createNote \
+    --statement-id apigateway-post \
+    --action lambda:InvokeFunction \
+    --principal apigateway.amazonaws.com \
+    --source-arn "arn:aws:execute-api:${AWS_REGION}:${ACCOUNT_ID}:${API_ID}/*/*"
+```
+
+### Step 6: Testing the Setup
+
+```bash
+# Get your API endpoint
+API_ENDPOINT="https://${API_ID}.execute-api.${AWS_REGION}.amazonaws.com/prod"
+
+# Test create note
+curl -X POST \
+  ${API_ENDPOINT}/notes \
+  -H 'Content-Type: application/json' \
+  -d '{"title": "CLI Test Note", "content": "This note was created using CLI setup"}'
+```
+
+### Cleanup Commands
+
+```bash
+# Delete API Gateway
+aws apigateway delete-rest-api --rest-api-id $API_ID
+
+# Delete Lambda functions
+aws lambda delete-function --function-name createNote
+aws lambda delete-function --function-name readNote
+aws lambda delete-function --function-name updateNote
+aws lambda delete-function --function-name deleteNote
+
+# Delete DynamoDB table
+aws dynamodb delete-table --table-name notes
+
+# Delete IAM roles and policies
+for func in create read update delete; do
+    # Get policy ARN
+    POLICY_ARN="arn:aws:iam::${ACCOUNT_ID}:policy/${func}NotePolicy"
+    
+    # Detach and delete policies
+    aws iam detach-role-policy \
+        --role-name ${func}NoteLambdaRole \
+        --policy-arn $POLICY_ARN
+    
+    aws iam detach-role-policy \
+        --role-name ${func}NoteLambdaRole \
+        --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    
+    aws iam delete-policy --policy-arn $POLICY_ARN
+    
+    # Delete role
+    aws iam delete-role --role-name ${func}NoteLambdaRole
+done
+```
+
+## Important Notes
+- Replace `${AWS_REGION}` with your desired region if not using environment variables
+- The `sleep 10` command is used to allow IAM role creation to propagate
+- All commands assume you're in a bash-compatible shell
+- Make sure you have appropriate AWS credentials configured
+- Keep track of created resources to ensure proper cleanup
 
 ## Additional Resources
 
