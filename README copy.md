@@ -55,7 +55,6 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [06-cloudformation-vpc-ec2-asg-elb](#06-cloudformation-vpc-ec2-asg-elb)
     - [07-elb-with-asg](#07-elb-with-asg)
     - [08-serverless-CRUD](#08-serverless-crud)
-    - [09-Lambda-Authorizer](#09-lambda-authorizer)
   - [Part 4: Medium Projects](#part-4-medium-projects)
     - [01-3-Tier-VPC](#01-3-tier-vpc)
     - [02-SAM-magic-8-ball](#02-sam-magic-8-ball)
@@ -144,9 +143,6 @@ Coming soon...
 - **File:** [project-description.md](03-basic-projects/08-serverless-CRUD/project-description.md)
 - **Description:** This project demonstrates how to create a serverless application that performs CRUD (Create, Read, Update, Delete) operations on a DynamoDB table using AWS Lambda and API Gateway.
 
-### 09-Lambda-Authorizer
-- **File:** [project-description.md](03-basic-projects/09-lambda-Authorizer/project-description.md)
-- **Description:** This project demonstrates how to implement a Lambda Authorizer to control access to API Gateway endpoints. The Lambda Authorizer verifies and authorizes incoming requests, enhancing security by allowing only authenticated users to access specified resources in the API.
 ---
 
 ## Part 4: Medium Projects
