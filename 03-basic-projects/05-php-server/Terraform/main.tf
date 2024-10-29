@@ -274,7 +274,7 @@ resource "aws_security_group" "web_server_sg" {
 #### AWS KEY PAIR ####
 resource "aws_key_pair" "deployer" {
   key_name   = "aws-key-demo-1"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+bprvm16cRzGg4pbYgFVMjMyNbolYHN8WCkGe/4rtkL7NHgLaLFJiZJTZu7XDqAWMHXEW0qC3Ya1DYvNnSemlOe8PFcYgdYHmjRm9ipW/SpZCoNAmieFVuT9hRl5zC2IHHBUo0g3Stukot0PFA0TERjuxeP7BS0B7dq/5hwkfwAHqHcE0KLKCfndMuvmSu9yZANoqAztAhUyaehzGCqNEiJkK4jt0PS/BWfd+HLLOCtxn6h26Rzvdnze2YEdDoCTlSchyQ1oN02aDh20591fV1HL2ZS7MMd3y6K5ruvT80a1c1e/yQiTl1RGjTwvW9cq5x64MPjLcM4qs3zBoRROP kumail@kumail-r7"
+  public_key = ""
 }
 
 ################ AWS EC2 INSTANCES ###############
