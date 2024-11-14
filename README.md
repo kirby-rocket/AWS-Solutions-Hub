@@ -59,6 +59,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
   - [Part 4: Medium Projects](#part-4-medium-projects)
     - [01-3-Tier-VPC](#01-3-tier-vpc)
     - [02-SAM-magic-8-ball](#02-sam-magic-8-ball)
+    - [03-keycloak-ecs-rds](#03-keycloak-ecs-rds)
   - [Part 5: Advanced Projects](#part-5-advanced-projects)
     - [01-AWS-architecture-diagram-generator](#01-aws-architecture-diagram-generator)
   - [Getting Started](#getting-started)
@@ -158,6 +159,10 @@ Coming soon...
 ### 02-SAM-magic-8-ball
 - **File:** [project-description.md](04-medium-projects/02-sam-magic-8-ball/project-description.md)
 - **Description:** This project is a serverless implementation of the Magic 8 Ball, featuring an interactive web interface. Powered by AWS Lambda for backend logic and hosted on S3 for the frontend, it delivers random responses to user questions for an engaging experience.
+
+### 03-keycloak-ecs-rds
+- **File:** [project-description.md](04-medium-projects/03-keycloak-ecs-rds/project-description.md)
+- **Description:** This project shows how to deploy Keycloak on Amazon Elastic Container Service (ECS) with an RDS PostgreSQL database. It contains a Docker file to build a Docker image for Keycloak and two AWS CloudFormation templates to deploy Keycloak on ECS running with Fargate and RDS PostgreSQL database.
 
 ---
 
