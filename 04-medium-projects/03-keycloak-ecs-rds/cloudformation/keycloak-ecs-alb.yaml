@@ -1,0 +1,246 @@
+Description: This CloudFormation template creates an ECS cluster with a Keycloak service running on Fargate, an Application Load Balancer, and a Route 53 alias record. 
+  The template also creates an Application Auto Scaling policy to scale the Keycloak service based on CPU utilization.
+  The Keycloak service is configured with the Keycloak database running on RDS PostgreSQL. The Keycloak and RDS credentials are stored in AWS Secrets Manager.
+  The Keycloak service is exposed through the Application Load Balancer with HTTPS listener. The Route 53 alias record points to the Application Load Balancer.
+
+Parameters:
+
+  VPCId:
+    Type: AWS::EC2::VPC::Id
+    Description: The ID of the VPC
+
+  PublicSubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: The list of Public Subnet IDs to use for the Load Balancer
+
+  ECSPrivateSubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: The list of Private Subnet IDs to use for the ECS tasks
+
+  ALBSecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: The ID of the Load Balancer Security Group
+
+  ECSSecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: The ID of the ECS task Security Group
+
+  HostedZoneId:
+    Type: String
+    Description: The ID of the Route 53 Hosted Zone
+
+  DomainName:
+    Type: String
+    Description: The domain name that will be used for the Route 53 alias record to access the Keycloak service
+
+  RDSInstanceEndpoint:
+    Type: String
+    Description: The RDS instance endpoint for Keycloak database
+
+  DBSecretArn:
+    Type: String
+    Description: The ARN of the secret in AWS Secrets Manager that contains the database credentials
+
+  KeycloakSecretArn:
+    Type: String
+    Description: The ARN of the secret in AWS Secrets Manager that contains the Keycloak credentials
+
+  CertificateArn:
+    Type: String
+    Description: The ARN of the SSL/TLS certificate in AWS Certificate Manager (ACM)
+
+Resources:
+
+  # Log Group for Keycloak ECS Task
+  KeycloakLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: "/ecs/dev-keycloak"
+      RetentionInDays: 30
+
+  # Cluster for Keycloak ECS Service. Capacity Providers are FARGATE and FARGATE_SPOT. Default Capacity Provider Strategy is FARGATE. 
+  KeycloakCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: dev-keycloak-cluster
+      CapacityProviders:
+        - FARGATE
+        - FARGATE_SPOT
+      DefaultCapacityProviderStrategy:
+        - CapacityProvider: FARGATE
+          Weight: 1
+          base: 1
+
+  # Task definition for Keycloak ECS Service. The task definition uses the Keycloak Docker image from ECR.
+  # The environment variables are passed to the Keycloak container for configuration.
+  # The log configuration is set to send logs to the CloudWatch log group created above.
+  # Keycloak container listens on port 8080 (HTTP). It will be exposed through the Application Load Balancer. 
+  KeycloakTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: dev-keycloak-task
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 1024
+      Memory: 2048
+      ExecutionRoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/KeycloakECSTaskExecutionRole"
+      ContainerDefinitions:
+        - Name: dev-keycloak
+          Image: !Sub ${AWS::AccountId}.dkr.ecr.us-east-1.amazonaws.com/dev-keycloak
+          Command: ["start"]
+          Essential: true
+          PortMappings:
+            - ContainerPort: 8080
+              HostPort: 8080
+              Protocol: tcp
+          Environment:
+            - Name: KC_BOOTSTRAP_ADMIN_USERNAME
+              Value: !Join [ "", [ "{{resolve:secretsmanager:", !Ref KeycloakSecretArn, ":SecretString:keycloakadminusername}}" ] ]
+            - Name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              Value: !Join [ "", [ "{{resolve:secretsmanager:", !Ref KeycloakSecretArn, ":SecretString:keycloakadminpassword}}" ] ]
+            - Name: KC_DB
+              Value: postgres
+            - Name: KC_DB_URL
+              Value: !Sub jdbc:postgresql://${RDSInstanceEndpoint}:5432/keycloakdb
+            - Name: KC_DB_USERNAME
+              Value: !Join [ "", [ "{{resolve:secretsmanager:", !Ref DBSecretArn, ":SecretString:dbusername}}" ] ]
+            - Name: KC_DB_PASSWORD
+              Value: !Join [ "", [ "{{resolve:secretsmanager:", !Ref DBSecretArn, ":SecretString:dbpassword}}" ] ]
+            - Name: KC_HOSTNAME
+              Value: !Ref DomainName
+            - Name: KC_HOSTNAME_STRICT
+              Value: false
+            - Name: KC_HTTP_ENABLED
+              Value: true
+            - Name: KC_PROXY_HEADERS
+              Value: xforwarded
+            - Name: KC_LOG_LEVEL
+              Value: INFO
+            - Name: KC_HEALTH_ENABLED
+              Value: true
+            - Name: KC_METRICS_ENABLED
+              Value: true
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref KeycloakLogGroup
+              awslogs-region: !Ref "AWS::Region"
+              awslogs-stream-prefix: keycloak
+
+  # Target group for Keycloak ECS Service. The target group is used by the Application Load Balancer to route traffic to the Keycloak service.
+  # The health check configuration checks the health of the Keycloak service every 30 seconds.
+  # The target group listens on port 8080 (HTTP) and the health check is performed on port 9000 (HTTPS).
+  KeycloakTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: dev-keycloak-target-group
+      Protocol: HTTP
+      Port: 8080
+      VpcId: !Ref VPCId
+      TargetType: ip
+      HealthCheckProtocol: HTTPS
+      HealthCheckPort: 9000
+      HealthCheckPath: /health
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 3
+      UnhealthyThresholdCount: 3
+
+  # Application Load Balancer for Keycloak ECS Service.
+  # The load balancer is associated with the security group for the load balancer.
+  # The load balancer is associated with the public subnets for the load balancer.
+  KeycloakLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: dev-keycloak-load-balancer
+      Subnets: !Ref PublicSubnetIds
+      SecurityGroups:
+        - !Ref ALBSecurityGroupId
+
+  # HTTPS Listener for Keycloak ECS Service. The listener listens on port 443 (HTTPS) and forwards traffic to the target group for the Keycloak service.
+  # The listener is associated with the SSL/TLS certificate from ACM.
+  # The listener is associated with the load balancer for the Keycloak service.
+  KeycloakListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref KeycloakLoadBalancer
+      Protocol: HTTPS
+      Port: 443
+      Certificates:
+        - CertificateArn: !Ref CertificateArn
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref KeycloakTargetGroup
+
+  # Keycloak ECS Service. The service runs the Keycloak task definition on the ECS cluster.
+  # The service is associated with the target group for the Keycloak service.
+  # The service runs 2 tasks with Fargate launch type.
+  # The service is associated with the private subnets for the ECS tasks.
+  # The service is associated with the security group for the ECS tasks.
+  # The service is associated with the Application Load Balancer listener.
+  KeycloakService:
+    Type: AWS::ECS::Service
+    DependsOn: KeycloakListener
+    Properties:
+      Cluster: !Ref KeycloakCluster
+      ServiceName: dev-keycloak-service
+      TaskDefinition: !Ref KeycloakTaskDefinition
+      DesiredCount: 2
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets: !Ref ECSPrivateSubnetIds
+          SecurityGroups:
+            - !Ref ECSSecurityGroupId
+          AssignPublicIp: DISABLED
+      LoadBalancers:
+        - TargetGroupArn: !Ref KeycloakTargetGroup
+          ContainerName: dev-keycloak
+          ContainerPort: 8080
+
+  # Application Auto Scaling for Keycloak ECS Service. The scalable target is the Keycloak service.
+  # The minimum capacity is 1 task and the maximum capacity is 5 tasks.
+  KeycloakScalableTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    DependsOn: KeycloakService
+    Properties:
+      ServiceNamespace: ecs
+      ResourceId: service/dev-keycloak-cluster/dev-keycloak-service
+      ScalableDimension: ecs:service:DesiredCount
+      MinCapacity: 1
+      MaxCapacity: 5
+      RoleARN: !Sub "arn:aws:iam::${AWS::AccountId}:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService"
+
+  # Application Auto Scaling Policy for Keycloak ECS Service. The policy scales the Keycloak service based on CPU utilization.
+  # The target value is set to 50% CPU utilization.
+  # The scale out and scale in cooldowns are set to 300 seconds.
+  KeycloakScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: dev-keycloak-cpu-scaling-policy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref KeycloakScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: 50.0
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECSServiceAverageCPUUtilization
+        ScaleOutCooldown: 300
+        ScaleInCooldown: 300
+
+  # Route 53 Alias Record for Keycloak ECS Service. The alias record points to the Application Load Balancer DNS name.
+  # The alias record is associated with the Route 53 Hosted Zone specified in the parameters.
+  # The alias record is associated with the domain name specified in the parameters.
+  Route53AliasRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt KeycloakLoadBalancer.DNSName
+        HostedZoneId: !GetAtt KeycloakLoadBalancer.CanonicalHostedZoneID
+
+Outputs:
+  DomainName:
+    Description: The domain name for the alias record
+    Value: !Sub "https://${DomainName}"
