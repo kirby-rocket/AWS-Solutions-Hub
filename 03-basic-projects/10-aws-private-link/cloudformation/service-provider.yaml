@@ -1,0 +1,397 @@
+Description:  This template will deploy a Service Provider infrastructure with a Network Load Balancer (NLB) 
+  and two EC2 instances in private subnets across two Availability Zones.
+  The NLB will distribute traffic to the EC2 instances. The EC2 instances will serve a simple web page. 
+  The template also creates VPC, subnets, Internet Gateway, NAT Gateways, and route tables for the infrastructure.
+
+#Parameters to be passed to the template at the time of deployment. 
+#You can pass these parameters through the AWS Management Console, AWS CLI, or AWS SDKs.
+#You can customize these parameters or use the default values at the time of deployment.
+Parameters:
+  ProjectName:
+    Description: The project name that is prefixed to resource names
+    Type: String
+    Default: ServiceProvider
+
+  VpcCIDR:
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Type: String
+    Default: 10.0.0.0/16
+
+  PublicSubnet1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.1.0/24
+
+  PrivateSubnet1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the private subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.2.0/24
+
+  PublicSubnet2CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the second Availability Zone
+    Type: String
+    Default: 10.0.3.0/24
+
+  PrivateSubnet2CIDR:
+    Description: Please enter the IP range (CIDR notation) for the private subnet in the second Availability Zone
+    Type: String
+    Default: 10.0.4.0/24
+
+  InstanceType:
+    Description: EC2 WebServer instance type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+    ConstraintDescription: Must be a valid EC2 instance type.
+
+# Mapping to map the region to the AMI ID of Amazon Linux 2023
+# You may need to update the AMI ID or add more regions. 
+# You can find the latest AMI IDs on the AWS website or AWS Management Console.
+Mappings:
+  RegionMap:
+    us-east-1:
+     "AMI": "ami-0fff1b9a61dec8a5f"
+    us-east-2:
+     "AMI": "ami-09da212cf18033880"
+    us-west-1:
+      "AMI": "ami-09b2477d43bc5d0ac"
+    us-west-2:
+      "AMI": "ami-0d081196e3df05f4d"
+
+Resources:
+  # Creates a virtual network for the Service Provider infrastructure with the specified CIDR block.
+  ServiceProviderVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+      - Key: Name
+        Value: !Sub ${ProjectName}-VPC
+
+  # InternetGateway resource creates an internet gateway for internet access to the VPC.
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Sub ${ProjectName}-IGW
+
+  # VPCGatewayAttachment resource attaches the internet gateway to the VPC.
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref ServiceProviderVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # Creates a public subnet in the VPC in the first Availability Zone.
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref ServiceProviderVPC
+      CidrBlock: !Ref PublicSubnet1CIDR
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Public-Subnet-AZ1
+
+  # Creates a private subnet in the VPC in the first Availability Zone.
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref ServiceProviderVPC
+      CidrBlock: !Ref PrivateSubnet1CIDR
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Private-Subnet-AZ1
+
+  #We need to create a public subnet in the second Availability Zone for high availability and fault tolerance.
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref ServiceProviderVPC
+      CidrBlock: !Ref PublicSubnet2CIDR
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Public-Subnet-AZ2
+
+  #We need to create a private subnet in the second Availability Zone for high availability and fault tolerance.
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref ServiceProviderVPC
+      CidrBlock: !Ref PrivateSubnet2CIDR
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Private-Subnet-AZ2
+  
+  # Elastic IP for the Nat Gateway in the first Availability Zone.
+  NatGateway1EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-ElasticIP-AZ1
+
+  # Elastic IP for the Nat Gateway in the second Availability Zone.
+  NatGateway2EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-ElasticIP-AZ2
+
+  # Nat Gateway in the first Availability Zone.
+  # The NAT Gateway 1 needs to be created in the public subnet 1.
+  # This is used to provide internet access to the instance in the private subnet in the first Availability Zone.
+  NatGateway1:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGateway1EIP.AllocationId
+      SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Nat-Gateway-AZ1
+
+  # Nat Gateway in the second Availability Zone
+  # The NAT Gateway 2 needs to be created in the public subnet 2.
+  # This is used to provide internet access to the instance in the private subnet in the second Availability Zone.
+  NatGateway2:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGateway2EIP.AllocationId
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Nat-Gateway-AZ2
+
+  # Creates a route table for the VPC that will be associated with the public subnets
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref ServiceProviderVPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Public-Route-Table
+
+  # PublicRoute resource creates a route in the route table to the internet gateway, allowing traffic to flow to the Internet.
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  # PublicSubnetRouteTableAssociation resource associates the public route table with the public subnets
+  PublicSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
+  # Creates a route table for the VPC that will be associated with the private subnets.
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref ServiceProviderVPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Private-Route-Table-AZ1
+
+  # PrivateRoute resource creates a route in the route table to the NAT Gateway, allowing traffic to flow from the private subnet to the Internet.
+  PrivateRoute1:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway1
+
+  # PrivateSubnetRouteTableAssociation resource associates the private route table with the private subnets
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      SubnetId: !Ref PrivateSubnet1
+
+  # We need to create a route table for the private subnet in the second Availability Zone.
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref ServiceProviderVPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Private-Route-Table-AZ2
+
+  # We need to create a route in the route table to the NAT Gateway in the second Availability Zone.
+  PrivateRoute2:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway2
+
+  # Associates the private route table with the private subnets in the second Availability Zone.
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      SubnetId: !Ref PrivateSubnet2
+
+  # NLBSecurityGroup to specify which traffic is allowed to reach the Network Load Balancer.
+  # Since the NLB is internal and we are using a Private Link, we only allow traffic on port 80 from the VPC CIDR block.
+  NLBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: NLB Security Group
+      VpcId: !Ref ServiceProviderVPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: !Ref VpcCIDR
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-NLB-Security-Group
+
+  # EC2SecurityGroup allows you to specify which traffic is allowed to reach the EC2 instances.
+  # In this case, we are allowing traffic on port 80 from the NLB Security Group.
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'EC2 Security Group'
+      VpcId: !Ref ServiceProviderVPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        SourceSecurityGroupId: !GetAtt NLBSecurityGroup.GroupId
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-EC2-Security-Group
+
+  # EC2 instance in the first private subnet that will be the service provider in the first Availability Zone.
+  EC2Instance1:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI] 
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      SubnetId: !Ref PrivateSubnet1
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName} EC2 Instance 1
+      UserData: 
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          systemctl enable httpd
+          echo "This is the Service Provider instance in the first Availability Zone." > /var/www/html/index.html
+
+  # EC2 instance in the second private subnet that will be the service provider in the second Availability Zone.
+  EC2Instance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI] 
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      SubnetId: !Ref PrivateSubnet2
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName} EC2 Instance 2
+      UserData: 
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          systemctl enable httpd
+          echo "This is the Service Provider instance in the second Availability Zone." > /var/www/html/index.html
+
+  # Network Load Balancer (NLB) to distribute traffic to the EC2 instances in the private subnets.
+  # The NLB is internal and will be used for Private Link to connect the VPC endpoint to the service provider.
+  NetworkLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties: 
+      Name: !Sub ${ProjectName}-NLB
+      Scheme: internal
+      Type: network
+      SecurityGroups:
+        - !GetAtt NLBSecurityGroup.GroupId
+      Subnets: 
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+      LoadBalancerAttributes:
+        - Key: load_balancing.cross_zone.enabled
+          Value: 'true'
+
+  # NLBTargetGroup to specify the targets (EC2 instances) for the Network Load Balancer.
+  NLBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub ${ProjectName}-NLB-TargetGroup
+      VpcId: !Ref ServiceProviderVPC
+      Port: 80
+      Protocol: TCP
+      TargetType: instance
+      HealthCheckProtocol: TCP
+      HealthCheckPort: traffic-port
+      Targets:
+        - Id: !Ref EC2Instance1
+          Port: 80
+        - Id: !Ref EC2Instance2
+          Port: 80
+
+  # NLBListener to specify the listener for the Network Load Balancer.
+  NLBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref NLBTargetGroup
+      LoadBalancerArn: !Ref NetworkLoadBalancer
+      Port: 80
+      Protocol: TCP
+
+  # VPC Endpoint Service to create a VPC endpoint service for the Network Load Balancer.
+  # This will be the entry point for the service provider.
+  # AcceptanceRequired is set to true to require acceptance before connecting to the service.
+  EndpointService:
+    Type: AWS::EC2::VPCEndpointService
+    Properties:
+      NetworkLoadBalancerArns:
+        - !Ref NetworkLoadBalancer
+      AcceptanceRequired: true
+
+# In this template, we are outputting the VPC Endpoint Service Id that can be used to create a VPC endpoint to connect to the service.
+Outputs:
+  EndpointServiceId:
+    Description: VPC Endpoint Service Id
+    Value: !Ref EndpointService
+

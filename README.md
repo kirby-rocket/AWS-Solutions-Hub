@@ -56,6 +56,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [07-elb-with-asg](#07-elb-with-asg)
     - [08-serverless-CRUD](#08-serverless-crud)
     - [09-Lambda-Authorizer](#09-lambda-authorizer)
+    - [10-AWS-PrivateLink](#10-aws-privatelink)
   - [Part 4: Medium Projects](#part-4-medium-projects)
     - [01-3-Tier-VPC](#01-3-tier-vpc)
     - [02-SAM-magic-8-ball](#02-sam-magic-8-ball)
@@ -148,6 +149,10 @@ Coming soon...
 ### 09-Lambda-Authorizer
 - **File:** [project-description.md](03-basic-projects/09-lambda-Authorizer/project-description.md)
 - **Description:** This project demonstrates how to implement a Lambda Authorizer to control access to API Gateway endpoints. The Lambda Authorizer verifies and authorizes incoming requests, enhancing security by allowing only authenticated users to access specified resources in the API.
+
+### 10-AWS-PrivateLink
+- **File:** [project-description.md](03-basic-projects/10-aws-private-link/project-description.md)
+- **Description:** This project demonstrates how to implement a Service Provider and Consumer with AWS PrivateLink connection between two VPCs.
 ---
 
 ## Part 4: Medium Projects
