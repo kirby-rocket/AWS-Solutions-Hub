@@ -64,6 +64,10 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
   - [Part 5: Advanced Projects](#part-5-advanced-projects)
     - [01-AWS-architecture-diagram-generator](#01-aws-architecture-diagram-generator)
   - [Part 6: Resources](#part-6-resources)
+    - [01-AWS-Diagram-CF](#01-aws-diagram-cf)
+    - [02-AWS-Awesome-Repo](#02-aws-awesome-repo)
+    - [03-AWS-Localstack](#03-aws-localstack)
+    - [⚠️04-AWS-Nuke](#04-aws-nuke)
   - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
@@ -180,15 +184,19 @@ Coming soon...
 
 ### Part 6: Resources
 
+### 01-AWS-Diagram-CF
 - Tools for creating architecture diagrams, such as cloud formation tools, to visualize architecture and plan resources effectively. Also includes useful resources for cost estimation and resource specifications:  
   [https://infviz.io/](https://infviz.io/)
 
+### 02-AWS-Awesome-Repo
 - A curated list of excellent AWS resources and tools for various use cases:  
   [https://github.com/donnemartin/awesome-aws](https://github.com/donnemartin/awesome-aws)
 
+### 03-AWS-LocalStack
 - Run most AWS services locally without an AWS account using this powerful mock service:  
   [https://github.com/localstack/localstack](https://github.com/localstack/localstack)
 
+### 04-AWS-Nuke
 - **Warning**: Do not use in production environments. This tool helps you clean up AWS resources by nuking them, so be very cautious when using it:  
   [https://github.com/ekristen/aws-nuke](https://github.com/ekristen/aws-nuke)
 
