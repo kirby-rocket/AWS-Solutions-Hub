@@ -1,0 +1,257 @@
+Description:  This template deploys the infrastructure for an interface VPC endpoint in the ServiceConsumer VPC.
+  This will be the consumer to access a service that is exposed as an endpoint service in a different VPC.
+  This allows an EC2 instance in the ServiceConsumer VPC to access a service provider without going over the internet.
+  We will also deploy a private hosted zone in Route 53 to create a user friendly domain name for the interface endpoint.
+
+#Parameters to be passed to the template at the time of deployment. 
+#You can pass these parameters through the AWS Management Console, AWS CLI, or AWS SDKs.
+#You can customize these parameters or use the default values at the time of deployment.
+Parameters:
+  ProjectName:
+    Description: The project name that is prefixed to resource names
+    Type: String
+    Default: ServiceConsumer
+
+  VpcCIDR:
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Type: String
+    Default: 10.1.0.0/16
+
+  PublicSubnet1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the first Availability Zone
+    Type: String
+    Default: 10.1.1.0/24
+
+  PublicSubnet2CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the second Availability Zone
+    Type: String
+    Default: 10.1.3.0/24
+
+  InstanceType:
+    Description: EC2 WebServer  instance type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+    ConstraintDescription: Must be a valid EC2 instance type.
+
+  EndpointServiceId:
+    Description: Please enter the ID of the endpoint service provider
+    Type: String
+
+  PrivateDomainName:
+    Description:  Please enter the domain name of your choice to create private hosted zone with a Route 53 record
+    Type: String
+    Default: myservice.local
+
+# Mapping to map the region to the AMI ID of Amazon Linux 2023
+# You may need to update the AMI ID or add more regions. 
+# You can find the latest AMI IDs on the AWS website or AWS Management Console.
+Mappings:
+  RegionMap:
+    us-east-1:
+     "AMI": "ami-0fff1b9a61dec8a5f"
+    us-east-2:
+     "AMI": "ami-09da212cf18033880"
+    us-west-1:
+      "AMI": "ami-09b2477d43bc5d0ac"
+    us-west-2:
+      "AMI": "ami-0d081196e3df05f4d"
+
+Resources:
+
+  # Creates a virtual network for the Service Consumer infrastructure with the specified CIDR block.
+  ServiceConsumerVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+      - Key: Name
+        Value: !Sub ${ProjectName}-VPC
+
+  # InternetGateway resource creates an internet gateway for internet access to the VPC.
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Sub ${ProjectName}-IGW
+
+  # VPCGatewayAttachment resource attaches the internet gateway to the VPC.
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref ServiceConsumerVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # Creates a public subnet in the VPC in the first Availability Zone.
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref ServiceConsumerVPC
+      CidrBlock: !Ref PublicSubnet1CIDR
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Public-Subnet-AZ1
+
+
+  #We need to create a public subnet in the second Availability Zone for high availability and fault tolerance.
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref ServiceConsumerVPC
+      CidrBlock: !Ref PublicSubnet2CIDR
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Public-Subnet-AZ2
+  
+  # Creates a route table for the VPC that will be associated with the public subnets
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref ServiceConsumerVPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-Public-Route-Table
+
+  # PublicRoute resource creates a route in the route table to the internet gateway, allowing traffic to flow to the Internet.
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  # PublicSubnetRouteTableAssociation resource associates the public route table with the public subnets
+  PublicSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
+  # EC2SecurityGroup allows you to specify which traffic is allowed to reach the EC2 instances.
+  # We allow ssh traffic on port 22 from anywhere because we will use the EC2 instance to connect to the interface endpoint.
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'EC2 Security Group'
+      VpcId: !Ref ServiceConsumerVPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-EC2-Security-Group
+
+  # InterfaceEndpointSecurityGroup allows you to specify which traffic is allowed to reach the interface endpoint.
+  # We allow http traffic on port 80 from the VPC CIDR block because only the resources in this VPC will access the interface endpoint.
+  InterfaceEndpointSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'InterfaceEndpoint Security Group'
+      VpcId: !Ref ServiceConsumerVPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: !Ref VpcCIDR
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-InterfaceEndpoint-Security-Group
+
+  # ConsumerEC2Instance resource creates an EC2 instance in the public subnet to access the interface endpoint.
+  ConsumerEC2Instance1:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI] 
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName} EC2 Instance 1
+
+  ConsumerEC2Instance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI] 
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName} EC2 Instance 2
+
+  # InterfaceEndpoint resource creates an interface endpoint with the service provider name.
+  InterfaceEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcEndpointType: Interface
+      ServiceName: !Sub com.amazonaws.vpce.${AWS::Region}.${EndpointServiceId}
+      VpcId: !Ref ServiceConsumerVPC
+      SubnetIds:
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
+      SecurityGroupIds:
+        - !Ref InterfaceEndpointSecurityGroup
+
+  # PrivateHostedZone resource creates a private hosted zone in Route 53 for the private domain name.
+  PrivateHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Ref PrivateDomainName
+      VPCs:
+        - VPCId: !Ref ServiceConsumerVPC
+          VPCRegion: !Ref "AWS::Region"
+      HostedZoneConfig:
+        Comment: "Private hosted zone for VPC endpoint"
+
+  # PrivateRecordSet resource creates a Route 53 record in the private hosted zone for the interface endpoint.
+  # This will be an alias record pointing to the interface endpoint DNS name.
+  PrivateRecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref PrivateHostedZone
+      Name: !Ref PrivateDomainName
+      Type: A
+      AliasTarget:
+        HostedZoneId: !Select ['0', !Split [':', !Select ['0', !GetAtt InterfaceEndpoint.DnsEntries]]]
+        DNSName: !Select ['1', !Split [':', !Select ['0', !GetAtt InterfaceEndpoint.DnsEntries]]]
+        EvaluateTargetHealth: true
+
+Outputs:
+  InterfaceEndpointId:
+    Description: The ID of the interface endpoint
+    Value: !Ref InterfaceEndpoint
+
+  InterfaceEndpointDnsName:
+    Description: The DNS name of the interface endpoint
+    Value: !Select ['1', !Split [':', !Select ['0', !GetAtt InterfaceEndpoint.DnsEntries]]]
+
+  PrivateDomainName:
+    Description: The private domain name of the Route 53 record
+    Value: !Join
+      - ''
+      - - 'http://'
+        - !Ref PrivateDomainName
+
