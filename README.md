@@ -67,7 +67,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [01-AWS-Diagram-CF](#01-aws-diagram-cf)
     - [02-AWS-Awesome-Repo](#02-aws-awesome-repo)
     - [03-AWS-Localstack](#03-aws-localstack)
-    - [⚠️04-AWS-Nuke](#04-aws-nuke)
+    - [04-AWS-Nuke⚠️](#04-aws-nuke)
   - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
