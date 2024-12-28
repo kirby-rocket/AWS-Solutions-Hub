@@ -63,6 +63,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
     - [03-keycloak-ecs-rds](#03-keycloak-ecs-rds)
   - [Part 5: Advanced Projects](#part-5-advanced-projects)
     - [01-AWS-architecture-diagram-generator](#01-aws-architecture-diagram-generator)
+  - [Part 6: Resources](#part-6-resources)
   - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
@@ -177,6 +178,19 @@ Coming soon...
 - **File:** [project-description.md](05-advanced-projects/01-AWS-architecture-diagram-generator/project-description.md)
 - **Description:** This project demonstrates how to create an AI-powered AWS architecture diagram generator using Next.js, React, and Amazon Bedrock with Claude 3.5 Sonnet.
 
+### Part 6: Resources
+
+- Tools for creating architecture diagrams, such as cloud formation tools, to visualize architecture and plan resources effectively. Also includes useful resources for cost estimation and resource specifications:  
+  [https://infviz.io/](https://infviz.io/)
+
+- A curated list of excellent AWS resources and tools for various use cases:  
+  [https://github.com/donnemartin/awesome-aws](https://github.com/donnemartin/awesome-aws)
+
+- Run most AWS services locally without an AWS account using this powerful mock service:  
+  [https://github.com/localstack/localstack](https://github.com/localstack/localstack)
+
+- **Warning**: Do not use in production environments. This tool helps you clean up AWS resources by nuking them, so be very cautious when using it:  
+  [https://github.com/ekristen/aws-nuke](https://github.com/ekristen/aws-nuke)
 
 ---
 ## Getting Started
