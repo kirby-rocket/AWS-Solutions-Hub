@@ -16,13 +16,13 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
   <tr>
     <td align="center">
       <a href="https://www.linkedin.com/in/kumail-rizvi/">
-        <img src="https://media.licdn.com/dms/image/v2/D4D03AQH2ZfVIAm9eKw/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1726753054679?e=1733961600&v=beta&t=ejFVp1BMtUTHeYERU-bDoIM1j9OD_uG-raugQgAG4co" width="100px;" alt="Kumail Rizvi"/><br />
+        <img src="https://media.licdn.com/dms/image/v2/D4D03AQH2ZfVIAm9eKw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1726753054679?e=1740614400&v=beta&t=ee7KF80dEH2rJGrAXwJef1yxH9pXBoF7Qh3AU2VeodU" width="100px;" alt="Kumail Rizvi"/><br />
         <sub><b>Kumail Rizvi</b></sub>
       </a>
     </td>
     <td align="center">
       <a href="https://www.linkedin.com/in/amir-malaeb/">
-        <img src="https://media.licdn.com/dms/image/v2/D5603AQGQR2GMFhEhnw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1726065541077?e=1733961600&v=beta&t=EvWKbaL6ELQjdI3y_g07RTbIQ5jHYHaqaSAjy0hFyeI" width="100px;" alt="Amir Malaeb"/><br />
+        <img src="https://media.licdn.com/dms/image/v2/D5603AQGQR2GMFhEhnw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1726065541077?e=1740614400&v=beta&t=hafO98NPX0vI1mgix_qak-6uhACHVBQEqJ7W28hYqBU" width="100px;" alt="Amir Malaeb"/><br />
         <sub><b>Amir Malaeb</b></sub>
       </a>
     </td>
