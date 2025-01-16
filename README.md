@@ -182,7 +182,7 @@ Coming soon...
 - **File:** [project-description.md](05-advanced-projects/01-AWS-architecture-diagram-generator/project-description.md)
 - **Description:** This project demonstrates how to create an AI-powered AWS architecture diagram generator using Next.js, React, and Amazon Bedrock with Claude 3.5 Sonnet.
 
-### Part 6: Resources
+## Part 6: Resources
 
 ### 01-AWS-Diagram-CF
 - Tools for creating architecture diagrams, such as cloud formation tools, to visualize architecture and plan resources effectively. Also includes useful resources for cost estimation and resource specifications:  
