@@ -35,44 +35,75 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
   - [Description](#description)
   - [Maintainers](#maintainers)
   - [📚 Table of Contents](#-table-of-contents)
+    <details>
+    <summary>Part 1: AWS Setup</summary>
+
+   - [01 aws-account-setup](#01-aws-account-setup)
+   - [02-aws-cli-setup](#02-aws-cli-setup)
+
+  </details>
+
   <details>
-  - <summary>[Part 1: AWS Setup](#part-1-aws-setup)</summary>
-    - [01 aws-account-setup](#01-aws-account-setup)
-    - [02-aws-cli-setup](#02-aws-cli-setup)
-  - [Part 2: Learning Resources](#part-2-learning-resources)
-    - [01-aws-concepts](#01-aws-concepts)
-    - [02-aws-services](#02-aws-services)
-    - [03-terraform-basics](#03-terraform-basics)
-    - [04-aws-terraform-learning-resources](#04-aws-terraform-learning-resources)
-    - [05-aws-certification-guide](#05-aws-certification-guide)
-    - [06-aws-best-practices-and-architecture](#06-aws-best-practices-and-architecture)
-    - [07-aws-devops-cicd](#07-aws-devops-cicd)
-  - [Part 3: Basic Projects](#part-3-basic-projects)
-    - [01-ec2-web-server](#01-ec2-web-server)
-    - [02-s3-static-website](#02-s3-static-website)
-    - [03-rds-setup](#03-rds-setup)
-    - [04-serverless-quote-api](#04-serverless-quote-api)
-    - [05-php-server](#05-php-server)
-    - [06-cloudformation-vpc-ec2-asg-elb](#06-cloudformation-vpc-ec2-asg-elb)
-    - [07-elb-with-asg](#07-elb-with-asg)
-    - [08-serverless-CRUD](#08-serverless-crud)
-    - [09-Lambda-Authorizer](#09-lambda-authorizer)
-    - [10-AWS-PrivateLink](#10-aws-privatelink)
-  - [Part 4: Medium Projects](#part-4-medium-projects)
-    - [01-3-Tier-VPC](#01-3-tier-vpc)
-    - [02-SAM-magic-8-ball](#02-sam-magic-8-ball)
-    - [03-keycloak-ecs-rds](#03-keycloak-ecs-rds)
-  - [Part 5: Advanced Projects](#part-5-advanced-projects)
-    - [01-AWS-architecture-diagram-generator](#01-aws-architecture-diagram-generator)
-  - [Part 6: Resources](#part-6-resources)
-    - [01-AWS-Diagram-CF](#01-aws-diagram-cf)
-    - [02-AWS-Awesome-Repo](#02-aws-awesome-repo)
-    - [03-AWS-Localstack](#03-aws-localstack)
-    - [04-AWS-Nuke⚠️](#04-aws-nuke)
+    <summary>Part 2: Learning Resources</summary>
+
+   - [01-aws-concepts](#01-aws-concepts)
+   - [02-aws-services](#02-aws-services)
+   - [03-terraform-basics](#03-terraform-basics)
+   - [04-aws-terraform-learning-resources](#04-aws-terraform-learning-resources)
+   - [05-aws-certification-guide](#05-aws-certification-guide)
+   - [06-aws-best-practices-and-architecture](#06-aws-best-practices-and-architecture)
+   - [07-aws-devops-cicd](#07-aws-devops-cicd)
+
+  </details>
+
+  <details>
+    <summary>Part 3: Basic Projects</summary>
+
+   - [01-ec2-web-server](#01-ec2-web-server)
+   - [02-s3-static-website](#02-s3-static-website)
+   - [03-rds-setup](#03-rds-setup)
+   - [04-serverless-quote-api](#04-serverless-quote-api)
+   - [05-php-server](#05-php-server)
+   - [06-cloudformation-vpc-ec2-asg-elb](#06-cloudformation-vpc-ec2-asg-elb)
+   - [07-elb-with-asg](#07-elb-with-asg)
+   - [08-serverless-CRUD](#08-serverless-crud)
+   - [09-Lambda-Authorizer](#09-lambda-authorizer)
+   - [10-AWS-PrivateLink](#10-aws-privatelink)
+
+  </details>
+
+  <details>
+    <summary>Part 4: Medium Projects</summary>
+
+   - [01-3-Tier-VPC](#01-3-tier-vpc)
+   - [02-SAM-magic-8-ball](#02-sam-magic-8-ball)
+   - [03-keycloak-ecs-rds](#03-keycloak-ecs-rds)
+
+  </details>
+
+  <details>
+    <summary>Part 5: Advanced Projects</summary>
+
+   - [01-AWS-architecture-diagram-generator](#01-aws-architecture-diagram-generator)
+
+  </details>
+
+  <details>
+    <summary>Part 6: Resources</summary>
+
+   - [01-AWS-Diagram-CF](#01-aws-diagram-cf)
+   - [02-AWS-Awesome-Repo](#02-aws-awesome-repo)
+   - [03-AWS-Localstack](#03-aws-localstack)
+   - [04-AWS-Nuke⚠️](#04-aws-nuke)
+
+  </details>
+
   - [Getting Started](#getting-started)
   - [Contributing](#contributing)
   - [License](#license)
   - [Contact](#contact)
+
+</details>
 ---
 
 ## Part 1: AWS Setup
