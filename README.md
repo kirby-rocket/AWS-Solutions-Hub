@@ -89,7 +89,12 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
   </details>
 
   <details>
-    <summary>Part 6: Resources</summary>
+    <summary>Part 6: AWS-Security </summary>
+
+    - [Generate IAM Credentials Report]/
+
+  <details>
+    <summary>Part 7: Resources/Tools</summary>
 
    - [01-AWS-Diagram-CF](#01-aws-diagram-cf)
    - [02-AWS-Awesome-Repo](#02-aws-awesome-repo)
