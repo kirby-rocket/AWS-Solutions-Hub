@@ -27,7 +27,7 @@ Without using third-party tools, you can achieve this using IAM's Credentials Re
 3. Click **Download credentials report**.
 4. The report will be downloaded as a `.CSV` file.
 
-![alt text](image.png)
+![alt text](IAM_Report.png)
 
 The report includes information on all users, including whether they have passwords, access keys, or MFA devices, along with their last usage details.
 
