@@ -91,7 +91,9 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
   <details>
     <summary>Part 6: AWS-Security </summary>
 
-    - [Generate IAM Credentials Report]/
+    - [Generate IAM Credentials Report](#generate-iam-reports)
+  
+  </details>
 
   <details>
     <summary>Part 7: Resources/Tools</summary>
@@ -219,7 +221,13 @@ Coming soon...
 - **File:** [project-description.md](05-advanced-projects/01-AWS-architecture-diagram-generator/project-description.md)
 - **Description:** This project demonstrates how to create an AI-powered AWS architecture diagram generator using Next.js, React, and Amazon Bedrock with Claude 3.5 Sonnet.
 
-## Part 6: Resources
+## Part 6: AWS Security 
+
+### Generate IAM-Reports 
+ **File:** [project-description.md](06-aws-security/Generate-IAM-Report/Generate-IAM-Reports.md)
+- **Description:** This Lab demonstrates how to create and generate IAM Credentials Report for Auditing IAM accounts and for Security Research
+
+## Part 7: Resources
 
 ### 01-AWS-Diagram-CF
 - Tools for creating architecture diagrams, such as cloud formation tools, to visualize architecture and plan resources effectively. Also includes useful resources for cost estimation and resource specifications:  
