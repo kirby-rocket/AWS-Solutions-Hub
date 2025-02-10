@@ -35,8 +35,8 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
   - [Description](#description)
   - [Maintainers](#maintainers)
   - [📚 Table of Contents](#-table-of-contents)
-    <details>
-    <summary>Part 1: AWS Setup</summary>
+  <details>
+  <summary>Part 1: AWS Setup</summary>
 
    - [01 aws-account-setup](#01-aws-account-setup)
    - [02-aws-cli-setup](#02-aws-cli-setup)
