@@ -1,0 +1,11 @@
+  {
+    "ProductId": "c96b49bb-c378-4a15-b2e3-842a9850b23d",
+    "ProductName": "Mouse",
+    "Category": "Computing",
+    "PricePerUnit": "29.99",
+    "Quantity": "2",
+    "TotalPrice": "59.98",
+    "CustomerId": "be44af0a-74f9-438e-a3ac-e3e21d84259f",
+    "CustomerName": "Tom Walker",
+    "TimeOfPurchase": "2021-02-22T8:01:21.389Z" 
+  }

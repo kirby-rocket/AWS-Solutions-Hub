@@ -1,0 +1,12 @@
+  {
+    "ProductId": "c96b49bb-c378-4a15-b2e3-842a9850b23d",
+    "ProductName": "Kettle Bell",
+    "ProductDescription": "A versatile kettle bell for strength training.",
+    "Category": "Gym",
+    "PricePerUnit": "160",
+    "Quantity": "1",
+    "TotalPrice": "160",
+    "CustomerId": "be44af0a-74f9-438e-a3ac-e3e21d84259f",
+    "CustomerName": "Neal Davis",
+    "TimeOfPurchase": "2021-02-07T17:50:42.389Z" 
+  }

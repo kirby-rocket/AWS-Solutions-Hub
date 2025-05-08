@@ -1,0 +1,11 @@
+{
+  "ProductId": "c96b49bb-c378-4a15-b2e3-842a9850b23d",
+  "ProductName": "iPhone",
+  "Category": "Phones",
+  "PricePerUnit": "1032",
+  "Quantity": "3",
+  "TotalPrice": "3096",
+  "CustomerId": "b20f30ta-29d3-10f3-wov0-10c39a30sgfs",
+  "CustomerName": "Sarah Harris",
+  "TimeOfPurchase": "2021-02-28T10:02:12.034Z" 
+}
