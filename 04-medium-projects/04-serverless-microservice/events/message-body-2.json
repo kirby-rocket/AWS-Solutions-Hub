@@ -1,0 +1,12 @@
+{
+  "ProductId": "d4b5d11b-119b-4a02-a5d0-71fd192dba99",
+  "ProductName": "Jacket",
+  "ProductDescription": "A stylish jacket for all seasons.",
+  "Category": "Clothing",
+  "PricePerUnit": "189",
+  "Quantity": "1",
+  "TotalPrice": "189",
+  "CustomerId": "wf9s200a-72f4-42ge-pw0c-10f3jf03l59f",
+  "CustomerName": "Paul Jones",
+  "TimeOfPurchase": "2021-02-15T19:13:32.314Z" 
+}

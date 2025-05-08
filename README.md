@@ -78,6 +78,7 @@ Welcome to the **AWS-Solutions-Hub**! This repository is a comprehensive collect
    - [01-3-Tier-VPC](#01-3-tier-vpc)
    - [02-SAM-magic-8-ball](#02-sam-magic-8-ball)
    - [03-keycloak-ecs-rds](#03-keycloak-ecs-rds)
+   - [04-serverless-microservice](#04-serverless-microservice)
 
   </details>
 
@@ -212,6 +213,10 @@ Coming soon...
 ### 03-keycloak-ecs-rds
 - **File:** [project-description.md](04-medium-projects/03-keycloak-ecs-rds/project-description.md)
 - **Description:** This project shows how to deploy Keycloak on Amazon Elastic Container Service (ECS) with an RDS PostgreSQL database. It contains a Docker file to build a Docker image for Keycloak and two AWS CloudFormation templates to deploy Keycloak on ECS running with Fargate and RDS PostgreSQL database.
+
+### 04-serverless-microservice
+- **File:** [project-description.md](04-medium-projects/04-serverless-microservice/project-description.md)
+- **Description:** This project demonstrates how to create a serverless microservice using AWS Lambda, API Gateway, SQS and DynamoDB. It includes a sample application that performs product purchase CRUD operations on a DynamoDB table, showcasing the power of serverless architecture for building scalable and cost-effective applications.
 
 ---
 

@@ -1,0 +1,12 @@
+{
+  "ProductId": "c96b49bb-c378-4a15-b2e3-842a9850b23d",
+  "ProductName": "Belt",
+  "ProductDescription": "A durable leather belt.",
+  "Category": "Accessories",
+  "PricePerUnit": "10",
+  "Quantity": "1",
+  "TotalPrice": "10",
+  "CustomerId": "be44af0a-74f9-438e-a3ac-e3e21d84259f",
+  "CustomerName": "John Doe",
+  "TimeOfPurchase": "2021-01-31T16:23:42.389Z" 
+}

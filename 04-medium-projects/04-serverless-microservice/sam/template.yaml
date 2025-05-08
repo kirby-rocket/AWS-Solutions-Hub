@@ -1,0 +1,371 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  aws-serverless-microservice
+
+  Sample SAM Template for aws-serverless-microservice
+
+Parameters:
+  StageName:
+    Type: String
+    Default: dev
+    Description: Stage name of the API. Default is dev.
+    AllowedValues:
+      - dev
+      - qa
+      - staging
+      - prod
+  DomainName:
+    Type: String
+    Description: The domain name for the API (e.g., api.example.com)
+  HostedZoneId:
+    Type: AWS::Route53::HostedZone::Id
+    Description: The Route53 Hosted Zone ID where the DNS record will be created
+  AccessLogGroup:
+    Type: String
+    Description: Enter a name for the CloudWatch access log group
+
+Globals:
+  Function:
+    Timeout: 3
+    Tracing: Active  # Enable AWS X-Ray tracing for all Lambda functions
+    LoggingConfig:
+      LogFormat: JSON
+  Api:
+    OpenApiVersion: 3.0.1
+
+Resources:
+
+  # Create a certificate for the API Gateway custom domain
+  ApiCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref HostedZoneId
+
+  # API Gateway REST API to handle product purchase requests
+  ServerlessApi:
+    Type: AWS::Serverless::Api
+    DependsOn: ApiGatewayAccount
+    Properties:
+      Name: ProductPurchaseApi
+      StageName: !Ref StageName
+      TracingEnabled: true
+      AccessLogSetting:
+        DestinationArn: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${AccessLogGroup}
+        Format: '{ "requestId":"$context.requestId", "ip": "$context.identity.sourceIp", "caller":"$context.identity.caller", "user":"$context.identity.user","requestTime":"$context.requestTime", "httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath", "status":"$context.status","protocol":"$context.protocol", "responseLength":"$context.responseLength" }'
+      MethodSettings:
+        - HttpMethod: '*'
+          ResourcePath: '/*'
+          LoggingLevel: INFO
+          DataTraceEnabled: true
+          MetricsEnabled: true
+      Cors:
+        AllowMethods: "'POST,GET,PUT,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        AllowOrigin: "'*'"
+
+  # Custom domain to access the API Gateway
+  ApiCustomDomain:
+    Type: AWS::ApiGateway::DomainName
+    DependsOn: ServerlessApi
+    Properties:
+      DomainName: !Ref DomainName
+      RegionalCertificateArn: !Ref ApiCertificate
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      SecurityPolicy: TLS_1_2
+
+  # Base path mapping for the custom domain
+  # This mapping will link the custom domain to the API Gateway
+  ApiBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !Ref ApiCustomDomain
+      RestApiId: !Ref ServerlessApi
+      Stage: !Ref StageName
+
+  # Route53 DNS record for the custom domain
+  # This record will point the custom domain to the API Gateway
+  ApiDnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt ApiCustomDomain.RegionalDomainName
+        HostedZoneId: !GetAtt ApiCustomDomain.RegionalHostedZoneId
+
+  # Lambda function to send product purchase data to SQS queue
+  # This function will be triggered by API Gateway POST, PUT, and DELETE requests
+  ProductPurchaseMessageSenderFunction:
+    Type: AWS::Serverless::Function
+    Description: 'Lambda function that sends product purchase data to SQS queue'
+    Properties:
+      FunctionName: ProductPurchaseMessageSender
+      CodeUri: ../src/
+      Handler: ProductPurchaseMessageSender.lambda_handler
+      Runtime: python3.13
+      Role: !GetAtt ProductPurchaseMessageSenderExecutionRole.Arn
+      Environment:
+        Variables:
+          QUEUE_URL: !Ref ProductPurchaseQueue
+      Events:
+        ApiEventPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ServerlessApi
+            Path: /product-purchase
+            Method: POST
+        ApiEventPut:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ServerlessApi
+            Path: /product-purchase/{id}  # Add a path parameter for the ID
+            Method: PUT
+        ApiEventDelete:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ServerlessApi
+            Path: /product-purchase/{id}  # Add a path parameter for the ID
+            Method: DELETE
+
+  # Lambda function to retrieve product purchase data from DynamoDB
+  # This function will be triggered by API Gateway GET requests
+  ProductPurchaseDataReaderFunction:
+    Type: AWS::Serverless::Function
+    Description: 'Lambda function that retrieves product purchase data from DynamoDB'
+    Properties:
+      FunctionName: ProductPurchaseDataReader
+      CodeUri: ../src/
+      Handler: ProductPurchaseDataReader.lambda_handler
+      Runtime: python3.13
+      Role: !GetAtt ProductPurchaseDataReaderExecutionRole.Arn
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref ProductPurchaseTable
+      Events:
+        ApiEventGetAll:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ServerlessApi
+            Path: /product-purchase
+            Method: GET
+        ApiEventGetById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ServerlessApi
+            Path: /product-purchase/{id}  # Add a path parameter for the ID
+            Method: GET
+
+  # Lambda function to handle product purchase data processing
+  # This function will be triggered by SQS messages
+  # It will process the product purchase and create or update or delete the data in the DynamoDB table
+  ProductPurchaseDataWriterFunction:
+    Type: AWS::Serverless::Function
+    Description: 'Lambda function that inserts product purchase data into DynamoDB table'
+    Properties:
+      FunctionName: ProductPurchaseDataWriter
+      CodeUri: ../src/
+      Handler: ProductPurchaseDataWriter.lambda_handler
+      Runtime: python3.13
+      Role: !GetAtt ProductPurchaseDataWriterExecutionRole.Arn
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt ProductPurchaseQueue.Arn
+            BatchSize: 10
+
+  # SQS queue for product purchase data
+  # This queue will be used to decouple the API from the data processing
+  # It allows the API to respond quickly to the client while the data processing is handled asynchronously
+  # The SQS queue will also provide durability and reliability for the product purchase data
+  ProductPurchaseQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: product-purchase-queue
+      SqsManagedSseEnabled: true
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt ProductPurchaseDLQ.Arn
+        maxReceiveCount: 3
+
+  # Dead-letter queue for the SQS queue
+  # This queue will be used to handle failed messages from the main SQS queue
+  # It allows the failed messages to be processed later or to be monitored for issues
+  ProductPurchaseDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: product-purchase-dlq
+      MessageRetentionPeriod: 1209600 # 14 days
+      SqsManagedSseEnabled: true
+
+  # DynamoDB table to store the product purchase data
+  # It will provide fast and scalable access to the data
+  # The table will be partitioned by the product purchase ID
+  ProductPurchaseTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: ProductPurchase
+      PrimaryKey:
+        Name: ProductPurchaseId
+        Type: String
+      SSESpecification:
+        SSEEnabled: true
+
+  # CloudWatch log group for API Gateway access logs
+  ApiGatewayLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '${AccessLogGroup}'
+      RetentionInDays: 7
+
+  # API Gateway account settings
+  # This resource is used to enable CloudWatch logging for API Gateway
+  ApiGatewayAccount:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn: !GetAtt ApiGatewayCloudWatchRole.Arn
+
+  # IAM role for API Gateway to write logs to CloudWatch
+  ApiGatewayCloudWatchRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          Action: 'sts:AssumeRole'
+          Effect: Allow
+          Principal:
+            Service: apigateway.amazonaws.com
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs'
+
+  # IAM role for Lambda function to send messages to SQS queue and write logs to CloudWatch
+  ProductPurchaseMessageSenderExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: ProductPurchaseMessageSenderPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                Resource: !GetAtt ProductPurchaseQueue.Arn
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/ProductPurchaseMessageSender:*
+              - Effect: Allow
+                Action:
+                  - xray:PutTraceSegments
+                  - xray:PutTelemetryRecords
+                Resource: "*"
+
+  # IAM role for Lambda function to handle product purchase data processing
+  # This role allows the function to write to DynamoDB and SQS
+  # It also allows the function to write logs to CloudWatch
+  ProductPurchaseDataWriterExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: ProductPurchaseDataWriterPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DeleteItem"
+                Resource: !GetAtt ProductPurchaseTable.Arn
+              - Effect: Allow
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/ProductPurchaseDataWriter:*
+              - Effect: Allow
+                Action:
+                  - xray:PutTraceSegments
+                  - xray:PutTelemetryRecords
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "sqs:ReceiveMessage"
+                  - "sqs:DeleteMessage"
+                  - "sqs:GetQueueAttributes"
+                Resource: !GetAtt ProductPurchaseQueue.Arn
+              - Effect: Allow
+                Action:
+                  - "sqs:SendMessage"
+                Resource: !GetAtt ProductPurchaseDLQ.Arn
+
+  # IAM role for Lambda function to retrieve product purchase data from DynamoDB
+  # This role allows the function to read from DynamoDB and write logs to CloudWatch
+  ProductPurchaseDataReaderExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: ProductPurchaseDataReaderPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:Query
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                Resource: !GetAtt ProductPurchaseTable.Arn
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/ProductPurchaseDataReader:*
+              - Effect: Allow
+                Action:
+                  - xray:PutTraceSegments
+                  - xray:PutTelemetryRecords
+                Resource: "*"
+
+Outputs:
+  ProductPurchaseApi:
+    Description: API Gateway endpoint URL for ProductPurchase
+    Value: !Sub "https://${ServerlessApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/product-purchase/"
+  
+  CustomDomainUrl:
+    Description: Custom domain URL for the ProductPurchase API
+    Value: !Sub "https://${DomainName}/product-purchase/"
